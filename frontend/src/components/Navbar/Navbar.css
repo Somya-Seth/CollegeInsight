@@ -1,0 +1,49 @@
+.navbar {
+    width: auto;
+    height: 4rem;
+    background-color: #86858a;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    padding: 0rem 2rem 0rem 2rem;
+    /* padding: 1rem; */
+    align-items: center;
+    /* margin: 0rem 1
+    rem 0rem 1rem ; */
+}
+.srgi_logo {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    border: 1px solid grey;
+}
+
+
+.college_name {
+    font-size: 1.3rem;
+    font-style: bold;
+    /* margin-left: -30rem; */
+    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+.avatar {
+    border-radius: 50%;
+    border: 1px solid white;
+    width: 2rem;
+    height: 2rem;
+    display: inline-block;
+    margin-right: 0.5rem;
+}
+.last {
+    display: flex;
+    align-items: center;
+}
+.navbar_left {
+    display: flex;
+    align-items: center;
+}
+.icons {
+    margin-right: -60rem;
+}
+.icons>* {
+    margin-right: 1rem;
+}

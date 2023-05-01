@@ -1,0 +1,38 @@
+.root_postcard {
+    /* display: flex; */
+    /* flex-direction: row;
+    flex-wrap: wrap; */
+    margin: 1rem;
+}
+.profile_image_activity {
+    border-radius: 50%;
+    border: 2px solid black;
+    background: teal;
+    width: 3rem;
+    height: 3rem;
+    margin: 0rem 1rem 0rem 0.7rem;
+}
+.card-headingg {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+.post_image {
+    width: auto;
+    height: auto;
+}
+
+@media screen and (max-width: 1000px) {
+    .profile_image_activity {
+        border-radius: 50%;
+        border: 2px solid black;
+        background: teal;
+        width: 2rem;
+        height: 2rem;
+        margin: 0rem 1rem 0rem 0.7rem;
+    }
+    .card-headingg, .post_card_text {
+        font-size: small;
+    }
+}

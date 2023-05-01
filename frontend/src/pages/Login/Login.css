@@ -1,0 +1,60 @@
+.row__ {
+    margin: 10rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.college-image__ {
+    width: 35rem;
+    height: auto;
+    display: flex;
+    justify-content: center;
+    margin-right: 3rem;
+}
+.login-form__ {
+    width: 30rem;
+    height: auto;
+    padding: 0.5rem;
+    padding-top: 0;
+    border: 1px solid black;
+    border-radius: 1rem;
+}
+.inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0.5rem;
+}
+.srgi-logo {
+    width: 8em;
+    height: 8em;
+    margin: 1em 0em 0em 1em;
+}
+.forget_password {
+    color: blue;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+.login_button {
+    margin-top: 1rem;
+}
+.more_ {
+    margin-top: 0.5em;
+    cursor: pointer;
+}
+.blue {
+    color: blue;
+}
+
+@media screen and (max-width: 1000px){
+    .row__{
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        font-size: 0.8em;
+        align-items: center;
+    }
+    .login-form__ {
+        margin-top: 1rem;
+    }
+}

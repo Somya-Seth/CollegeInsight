@@ -1,0 +1,124 @@
+.feed {
+    display: flex;
+    flex-direction: row;
+    padding: 0.2rem 10rem 0 10rem;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+.feed>*{
+    margin: 1rem;
+}
+.feed_left {
+    width: 28%;
+    display: flex;
+    /* position: fixed; */
+    flex-direction: column;
+}
+.feed_left>*, .feed_middle>*, .feed_right>* {
+    margin: 1rem;
+}
+.feed_middle {
+    width: 50%;
+    /* overflow: scroll; */
+}
+.feed_right {
+    width: 25%;
+}
+.feed_left_top {
+    min-height: 10rem;
+}
+.cover {
+    height: 7rem;
+    background-color: #f3f3f3;
+    border-radius: 0.5rem;
+}
+.main_content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.imggg {
+    width: 5rem;
+    height: 5rem;
+    border: 3px solid gray;
+    border-radius: 2rem;
+    margin-top: -3rem;
+    background-color: white;
+}
+.fullname {
+    margin-top: 1rem;
+    font-size: 1.3rem;
+}
+.about_yourself {
+    display: flex;
+    margin-top: 2rem;
+    font-size: 1rem;
+    margin-bottom: 2rem;
+    justify-content: center;
+    align-items: center;
+}
+.skills {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    font-size: 1.2rem;
+    min-height: 6rem;
+}
+.activity_details {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+.activity_person_image {
+    display: flex;
+    border: 1px solid grey;
+    border-radius: 50%;
+    width: 3rem;
+    height: 3rem;
+    margin-right: 2rem;
+}
+.activity_card {
+    padding: 0.5rem;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+}
+.timeago__ {
+    display: flex;
+    margin-left: 40%;
+    font-size: 1rem;
+}
+.post_img {
+    min-height: 10rem;
+    border: 1px solid grey;
+    border-radius: 0.5rem;
+    margin-bottom: 0.7rem;
+}
+.text__ {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+}
+.college_glimpses {
+    min-height: 15rem;
+}
+.suggestions {
+    display: flex;
+    flex-direction: row;
+}
+.people_images {
+    display: flex;
+    border: 1px solid grey;
+    border-radius: 50%;
+    width: 2rem;
+    height: 2rem;
+    margin-right: 1rem;
+}
+.xxxx {
+    padding: 0.5rem;
+    margin-top: 0.5rem;
+}
+.xxxx>* {
+    margin-bottom: 0.5rem;
+}
