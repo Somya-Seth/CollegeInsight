@@ -86,36 +86,98 @@ export default function Feed2() {
     }
     const [showModal, setShowModal] = useState(false);
     const [showPhotoModal, setShowPhotoModal] = useState(false);
-	const [showDocModal, setShowDocModal] = useState(false);
+    const [showDocModal, setShowDocModal] = useState(false);
+    const [showSkills, setShowSkills] = useState('');
     const [UserData, setUserData] = useState("");
+    const [skills, setSkills] = useState([]);
+    const [newSkills, setNewSkills] = useState('');
+    const [posts, setData] = useState('');
+    const handleChange = e => {
+        const name = e.target.value
+        setNewSkills(name)
+    }
+    const addSkillsList = async () => {
+        try {
+            const res = await axios.post(`http://localhost:8000/addSkills`, {
+                body: {
+                    userId: UserData._id,
+                    skills: skills,
+                }
+            });
+            setShowSkills(res.data.skills)
+            setShowSkillsModal(false)
+            console.log(res)
+        } catch (error) {
+            console.error(error);
+        }
+    }
+    const setAddSkills = e => {
+        setSkills([...skills, newSkills]);
+        setNewSkills('')
 
-    const clickHandler = () => {
-        setShowModal(true)
-        setShowPhotoModal(false)
-        setShowDocModal(false)
+
+
+    };
+    const clickHandler = (event) => {
+
+        switch (showModal) {
+            case true:
+                setShowModal(false);
+                break;
+            case false:
+                setShowModal(true);
+                break;
+            default:
+                setShowModal(false);
+                break;
+        }
+    };
+    const uploadDoc = (event) => {
+        switch (showDocModal) {
+            case false:
+                setShowDocModal(true);
+                break;
+            case true:
+                setShowDocModal(false);
+                break;
+            default:
+                setShowDocModal(false);
+                break;
+        }
     }
-    const uploadPhoto = () => {
-        setShowPhotoModal(true)
-        setShowDocModal(false)
-        setShowModal(false)
-    }
-    const uploadDoc = () => {
-        setShowDocModal(true)
-        setShowPhotoModal(false)
-        setShowModal(false)
+    const uploadPhoto = (event) => {
+        switch (showPhotoModal) {
+            case false:
+                setShowPhotoModal(true);
+                break;
+            case true:
+                setShowPhotoModal(false);
+                break;
+            default:
+                setShowPhotoModal(false);
+                break;
+        }
     }
 
     useEffect(() => {
+        async function getPost(){
+			const getPostData = await axios.get('http://localhost:8000/getpost')
+			console.log("hello", getPostData.data)
+			setData(getPostData.data)
+		}
         async function getUser() {
-          console.log(user)
-          const email= user.email
-          const getProfilePicture = await axios.get(`http://localhost:8000/profilePicture?id=${user._id}`)
-          console.log("profile picture", getProfilePicture);
-          const getUserData = await axios.get('http://localhost:8000/users', { params: user })
-          setUserData(getUserData.data[0]);
-          console.log(getUserData,UserData);
+            console.log(user)
+            const email = user.email
+            const getProfilePicture = await axios.get(`http://localhost:8000/profilePicture?id=${user._id}`)
+            console.log("profile picture", getProfilePicture);
+            const getUserData = await axios.get('http://localhost:8000/users', { params: user })
+            setUserData(getUserData.data[0]);
+            console.log(getUserData, UserData);
+            setShowSkills(getUserData.data[0].skills)
+
         }
         getUser()
+        getPost()
     }, []);
 
     return (
@@ -135,7 +197,7 @@ export default function Feed2() {
                                     <div className='about_yourself'>
                                         Hello, I am a UI/UX designer. Hello, I am a UI/UX designer. My hobbies are ...
                                     </div>
-                                    <Button onClick={() => {navigate('/profile')}}>Edit Profile</Button>
+                                    <Button onClick={() => { navigate('/profile') }}>Edit Profile</Button>
                                 </div>
                             </Card.Body>
                         </Card>
@@ -143,12 +205,24 @@ export default function Feed2() {
                     <div className='feed_left_bottom'>
                         <Card>
                             <Card.Body>
-                                <div className='skills'>
+                                <div className='skillsMain'>
                                     <div>Skills</div>
+                                    <br/>
                                     <div className='edit_icon_summary'>
                                         <FiEdit3 onClick={skillsModal} />
                                     </div>
                                 </div>
+                                <div className='skills'>
+                                        {
+                                            showSkills && (
+                                                <>
+                                                    {showSkills.map((item, index) => (
+                                                            <p style={{  }} key={index}>{item}</p>
+                                                        ))}
+                                                </>
+                                            )
+                                        }
+                                    </div>
                                 <div>
                                 </div>
                             </Card.Body>
@@ -167,11 +241,11 @@ export default function Feed2() {
                             <div>
                                 <button onClick={uploadPhoto}>
                                     <img src="/images/photo-icon.svg" alt="" />
-                                    <span>Photo</span>
+                                    <span onClick={uploadPhoto}>Photo</span>
                                 </button>
                                 <button onClick={uploadDoc}>
                                     <img src="/images/video-icon.svg" alt="" />
-                                    <span>Document</span>
+                                    <span onClick={uploadDoc}>Document</span>
                                 </button>
                                 <button onClick={clickHandler}>
                                     <img src="/images/article-icon.svg" alt="" />
@@ -181,21 +255,32 @@ export default function Feed2() {
                         </ShareBox>
                     </div>
                     <div className='activity'>
-                        <Card className='activity_card'>
-                            <div className='activity_details'>
+                        { posts &&
+
+                            (
+                                <>
+                                {
+                                posts.map((item, index) => (
+                                <Card  key={index} className='activity_card'>
+                                <div className='activity_details'>
                                 <div className='activity_person_image'>
-                                    <img></img>
+                                <img></img>
                                 </div>
-                                <div>Person Name</div>
-                                <div className='timeago__'>1 hour ago</div>
-                            </div>
+                                <p style={{width:'70%'}}>{item.userData[0].name}</p>
+                                <div className='timeago__'>{item.date}</div>
+                                </div>
                             <div className='text__'>
-                                User enters some text that will come here..
+                            {item.text}
                             </div>
                             <div className='post_img'>
                                 <img ></img>
                             </div>
-                        </Card>
+                            </Card>
+                            ))}
+                            </>
+    )
+                                }
+
                     </div>
                 </div>
                 <div className='feed_right'>
@@ -228,30 +313,45 @@ export default function Feed2() {
                 </div>
                 <Modal show={showSkillsModal} onHide={() => setShowSkillsModal(false)}>
                     <Modal.Body className='skills_modal'>
-                        <TextField label="Enter skills" type='text' fullWidth size='small' margin='dense'
+                        <TextField label="Enter skills" onChange={handleChange} value={newSkills} type='text' fullWidth size='small' margin='dense'
                             InputProps={{
                                 endAdornment: (
                                     <InputAdornment position="end">
-                                        <Button variant="outlined">Add</Button>
+                                        <Button variant="outlined" onClick={setAddSkills}>Add</Button>
                                     </InputAdornment>
                                 ),
                             }}>
                         </TextField>
+                        {
+                            skills && (
+                                <>
+                                    <h6>Skills:</h6>
+                                    <div style={{ display: 'flex' }}>
+
+                                        {skills.map((item, index) => (
+                                            <p style={{ marginLeft: '5px' }} key={index}>{item}</p>
+                                        ))}
+                                    </div>
+                                </>
+                            )
+                        }
+
                     </Modal.Body>
                     <Modal.Footer>
                         <Button variant="secondary" onClick={() => setShowSkillsModal(false)}>Close</Button>
-                        <Button variant="primary">Add Skills</Button>
+                        <Button variant="primary" onClick={addSkillsList}>Add Skills</Button>
                     </Modal.Footer>
                 </Modal>
             </div>
+            <PostalModal props={[UserData, showPhotoModal, showDocModal, showModal]} UserData={UserData} showPhotoModal={showPhotoModal} showDocModal={showDocModal} showModal={showModal} uploadPhoto={uploadPhoto} uploadDoc={uploadDoc} clickHandler={clickHandler} />
 
-            {
+            {/* {
             showDocModal  == true?
             <PostalModal data={'document'} /> :
             showPhotoModal == true?
             <PostalModal data={'photos'} /> :
             <PostalModal />
-            }
+            } */}
         </>
     )
 }

@@ -4,8 +4,6 @@ import styled from "styled-components";
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import { useLocation } from 'react-router-dom';
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
 
 
 const Container = styled.div`
@@ -183,7 +181,7 @@ export default function PostModal(props) {
 	const [DocFile, setDocFile] = useState("");
 	const [assetArea, setAssetArea] = useState("");
 	
-	let showModal = 'close';
+	let showModal = true;
 	
 	  const reset = (event) => {
 		  setEditorText("");
@@ -192,12 +190,12 @@ export default function PostModal(props) {
 		  setImageFile(null);
 		  setDocFile("");
 		  setAssetArea("");
-		  if (props.showPhotoModal==="open") {
+		  if (props.showPhotoModal==true) {
 			  
 			  props.uploadPhoto(event);
 			}
 			
-			else if (props.showDocModal==="open") {
+			else if (props.showDocModal==true) {
 				
 				props.uploadDoc(event);
 			}
@@ -205,11 +203,10 @@ export default function PostModal(props) {
 				props.clickHandler(event);
 			}
 		};
-		
 		const postArticle = async (event) => {
 		  await axios.post("http://localhost:8000/post",{
 			  text: editorText,
-			  userId: props.userData._id,
+			  userId: props.UserData._id,
 		  })
 		  reset()
 		}
@@ -239,140 +236,116 @@ export default function PostModal(props) {
 		setImageFile(image);
 	}
 
+
+	
+
+
 	return (
-		// <>
-		// 	{props.showModal === "open" && (
-		// 		<Container>
-		// 			<Content>
-		// 				<Header>
-		// 					<h2>Create a post</h2>
-		// 					<button onClick={(event) => reset(event)}>
-		// 						<img src="/images/close-icon.svg" alt="" />
-		// 					</button>
-		// 				</Header>
-		// 				<SharedContent>
-		// 					<UserInfo>
-		// 						<img src="/images/user.svg" alt="" />
-		// 						<span>{userData.name}</span>
-		// 					</UserInfo>
-		// 					<Editor>
-
-		// 						<textarea value={editorText} onChange={(event) => setEditorText(event.target.value)} placeholder="What do you want to talk about?" autoFocus={true} />
-
-
-
-		// 					</Editor>
-		// 				</SharedContent>
-		// 				<ShareCreation>
-
-		// 				<PostButton onClick={postArticle}>
-		// 					Post
-		// 				</PostButton>
-		// 				</ShareCreation>
-
-		// 			</Content>
-		// 		</Container>
-		// 	)}
-		// 	{props.showPhotoModal === "open" && (
-		// 		<Container>
-		// 			<Content>
-		// 				<Header>
-		// 					<h2>Create a post</h2>
-		// 					<button onClick={(event) => reset(event)}>
-		// 						<img src="/images/close-icon.svg" alt="" />
-		// 					</button>
-		// 				</Header>
-		// 				<SharedContent>
-		// 					<UserInfo>
-		// 						<img src="/images/user.svg" alt="" />
-		// 						<span>"Name"</span>
-		// 					</UserInfo>
-		// 					<Editor>
-
-		// 						<UploadImage>
-		// 							<input type="file" accept="image/gif, image/jpeg, image/png" name="image" id="imageFile" onChange={handleImage} style={{ display: "none" }} />
-		// 							<p>
-		// 								<label htmlFor="imageFile">Select an image to share</label>
-		// 							</p>
-		// 							<button onClick={handleImageUpload}>Upload</button>
-		// 							{imageFile && <img src={URL.createObjectURL(imageFile)} alt="" />}
-		// 						</UploadImage>
-		// 						<textarea value={editorImageText} onChange={(event) => setEditorImageText(event.target.value)} placeholder="Write a caption for your Photo" autoFocus={true} />
-		// 					</Editor>
-		// 				</SharedContent>
-
-		// 				<PostButton>
-		// 					Post
-		// 				</PostButton>
-
-		// 			</Content>
-		// 		</Container>
-		// 	)}
-		// 	{props.showDocModal === "open" && (
-		// 		<Container>
-		// 			<Content>
-		// 				<Header>
-		// 					<h2>Create a post</h2>
-		// 					<button onClick={(event) => reset(event)}>
-		// 						<img src="/images/close-icon.svg" alt="" />
-		// 					</button>
-		// 				</Header>
-		// 				<SharedContent>
-		// 					<UserInfo>
-		// 						<img src="/images/user.svg" alt="" />
-		// 						<span>"Name"</span>
-		// 					</UserInfo>
-		// 					<Editor>
-		// 						<input
-		// 							type="File"
-		// 							name="Document"
-		// 							id="DocFile"
-		// 							value={DocFile}
-		// 							placeholder="Upload the Document"
-		// 							onChange={(event) => setDocFile(event.target.value)}
-		// 						/>
-		// 						<textarea value={editorDocText} onChange={(event) => setEditorDocText(event.target.value)} placeholder="Write something about your document" autoFocus={true} />
-		// 					</Editor>
-		// 				</SharedContent>
-		// 				<ShareCreation>
-
-		// 				<PostButton>
-		// 					Post
-		// 				</PostButton>
-		// 				</ShareCreation>
-					
-		// 			</Content>
-		// 		</Container>
-		// 	)}
-
-		// </>
 		<>
-		 <Modal>
-		 <Modal.Header closeButton>
-			{
-			props.data == 'photos'? 
-			<Modal.Title>Select Images</Modal.Title> : 
-			props.data == 'document' ?
-			<Modal.Title>Select Videos</Modal.Title> : 
-			<Modal.Title>Write something to post</Modal.Title>
-			}
-        </Modal.Header>
+			{props.showModal === true && (
+				<Container>
+					<Content>
+						<Header>
+							<h2>Create a post</h2>
+							<button onClick={(event) => reset(event)}>
+								<img src="/images/close-icon.svg" alt="" />
+							</button>
+						</Header>
+						<SharedContent>
+							<UserInfo>
+								<img src="/images/user.svg" alt="" />
+								<span>{props.UserData.name}</span>
+							</UserInfo>
+							<Editor>
 
-        <Modal.Body>
-		   {
-			props.data == 'photos'? 
-			<a>Select images to share.</a> : 
-			props.data == 'document' ?
-			<a>Select Videos to share.</a> :
-			<a>Write something to post.</a>
-			}
-        </Modal.Body>
+								<textarea value={editorText} onChange={(event) => setEditorText(event.target.value)} placeholder="What do you want to talk about?" autoFocus={true} />
 
-        <Modal.Footer>
-          <Button variant="secondary">Cancel</Button>
-          <Button variant="primary">Done</Button>
-        </Modal.Footer>
-		 </Modal>
+
+
+							</Editor>
+						</SharedContent>
+						<ShareCreation>
+
+						<PostButton onClick={postArticle}>
+							Post
+						</PostButton>
+						</ShareCreation>
+
+					</Content>
+				</Container>
+			)}
+			{props.showPhotoModal === true && (
+				<Container>
+					<Content>
+						<Header>
+							<h2>Create a post</h2>
+							<button onClick={(event) => reset(event)}>
+								<img src="/images/close-icon.svg" alt="" />
+							</button>
+						</Header>
+						<SharedContent>
+							<UserInfo>
+								<img src="/images/user.svg" alt="" />
+								<span>{props.UserData.name}</span>
+							</UserInfo>
+							<Editor>
+
+								<UploadImage>
+									<input type="file" accept="image/gif, image/jpeg, image/png" name="image" id="imageFile" onChange={handleImage} style={{ display: "none" }} />
+									<p>
+										<label htmlFor="imageFile">Select an image to share</label>
+									</p>
+									<button onClick={handleImageUpload}>Upload</button>
+									{imageFile && <img src={URL.createObjectURL(imageFile)} alt="" />}
+								</UploadImage>
+								<textarea value={editorImageText} onChange={(event) => setEditorImageText(event.target.value)} placeholder="Write a caption for your Photo" autoFocus={true} />
+							</Editor>
+						</SharedContent>
+
+						<PostButton>
+							Post
+						</PostButton>
+
+					</Content>
+				</Container>
+			)}
+			{props.showDocModal === true && (
+				<Container>
+					<Content>
+						<Header>
+							<h2>Create a post</h2>
+							<button onClick={(event) => reset(event)}>
+								<img src="/images/close-icon.svg" alt="" />
+							</button>
+						</Header>
+						<SharedContent>
+							<UserInfo>
+								<img src="/images/user.svg" alt="" />
+								<span>{props.UserData.name}</span>
+							</UserInfo>
+							<Editor>
+								<input
+									type="File"
+									name="Document"
+									id="DocFile"
+									value={DocFile}
+									placeholder="Upload the Document"
+									onChange={(event) => setDocFile(event.target.value)}
+								/>
+								<textarea value={editorDocText} onChange={(event) => setEditorDocText(event.target.value)} placeholder="Write something about your document" autoFocus={true} />
+							</Editor>
+						</SharedContent>
+						<ShareCreation>
+
+						<PostButton>
+							Post
+						</PostButton>
+						</ShareCreation>
+					
+					</Content>
+				</Container>
+			)}
+
 		</>
 	)
 }

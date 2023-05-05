@@ -46,27 +46,22 @@ export default function Profile(props) {
 
   const [profilePicture, setImage] = useState('');
   const [postData, setpostData] = useState("");
-
   const inputFile = useRef(null);
-
   const { user } = useContext(AuthContext);
-
   var base64String = ''
   useEffect(() => {
     async function getUser() {
-      console.log(user)
-      const email= user.email
-      const getUserData = await axios.get(`http://localhost:8000/profilePicture?email=${user.email}`).then(() => {
-        console.log("profle picture", getUserData);
-        setUserData(getUserData.data[0]);
-        console.log(getUserData,UserData);
-      })
-      .catch((err) => {
-        console.log("error ocurred in profile.js");
-      })
+      console.log(user);
+      const email = user.email;
+      try {
+        const response = await axios.get(`http://localhost:8000/profilePicture?email=${email}`);
+        console.log("Profile picture:", response.data[0]);
+        setUserData(response.data[0]);
+      } catch (err) {
+        console.log("Error occurred in profile.js:", err);
+      }
     }
     async function getPost(){
-
 			const getPostData = await axios.get('http://localhost:8000/getpost',{
       })
 			console.log("hello", getPostData.data)
@@ -74,9 +69,9 @@ export default function Profile(props) {
 		}
     getPost()
     getUser()
-
   }, [user.email]);
-
+ 
+  
   console.log("image", UserData);
   console.log("imag1", UserData?.profilePicture?.contentType);
   console.log("imag2", UserData?.profilePicture?.data?.data);

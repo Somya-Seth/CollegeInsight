@@ -72,6 +72,11 @@ const user = new Schema({
         data: Buffer,
         contentType: String,
         required: false,
+    },
+    skills: {
+        type: Array,
+        required: false,
+        default: ''
     }
 })
 const User = mongoose.model('User', user);

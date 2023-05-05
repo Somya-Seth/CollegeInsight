@@ -55,7 +55,14 @@ app.get('/cookie', async (req, res) => {
     console.log("cookie", cookie)
     res.send(cookie)
 })
-
+app.post('/addSkills', async function(req,res){
+    try{
+        await router.addSkills(req,res);
+    }
+    catch(err){
+        console.log("error", err)
+    }
+})
 app.post('/signup', async function (req, res) {
     try {
         console.log("hit api")
@@ -160,6 +167,29 @@ app.get('/users', async function (req, res) {
     }
   });
 var upload = multer({ storage: storage });
+app.post('/postImage', upload.single("postImage"), async function(req,res){
+    try{
+        console.log("mksdkl", req.body);
+        console.log("req file",req.file)
+        const xyz = path.join(__3dirname, "../" + '/uploads')
+        console.log("dirname", xyz);
+        req.body.postImage = fs.readFileSync(path.join(__dirname, "../backend" + '/uploads'+"/"+req.file.filename))
+        const obj = {
+            postImage: {
+                data: req.body.postImage,
+                contentType: 'image/png'
+            }
+        }
+        req.body.postImage = obj.postImage
+        req.body.postImage.contentType = 'image/png'
+        const data = await User.findByIdAndUpdate({_id:req.body.userId}, req.body, { });
+        console.log("user data", data);
+        await data.save()
+    }catch (err){
+        console.log("erroororroror", err.message);
+        res.status(502).json({ message: 'Server error' });
+    }
+})
 app.post('/postprofile', upload.single("profilePicture"), async function(req,res){
     try{
         console.log("mksdkl", req.body);
@@ -187,6 +217,22 @@ app.post('/postprofile', upload.single("profilePicture"), async function(req,res
 app.get('/profilePicture', async function(req, res) {
     try{
         await router.getProfilePicture(req, res);
+    }catch(err) {
+        console.log(err.message);
+        res.status(400).send({message: 'error while fetching image'})
+    }
+})
+app.get('/profilePicture', async function(req, res) {
+    try{
+        await router.getProfilePicture(req, res);
+    }catch(err) {
+        console.log(err.message);
+        res.status(400).send({message: 'error while fetching image'})
+    }
+})
+app.get('/postImage', async function(req, res) {
+    try{
+        await router.getPostImage(req, res);
     }catch(err) {
         console.log(err.message);
         res.status(400).send({message: 'error while fetching image'})

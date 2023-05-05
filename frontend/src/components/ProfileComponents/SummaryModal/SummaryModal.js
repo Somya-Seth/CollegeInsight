@@ -3,18 +3,16 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import TextField from '@mui/material/TextField';
 import axios from 'axios'
-
 export default function Example(props) {
   const [show, setShow] = useState(props.showModal2);
-
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const submit = async () => {
     console.log(props.UserData)
-    const userId = {id:props.UserData_id}
+    const userId = {id:props.UserData._id}
     const res = await axios.post("http://localhost:8000/postsummary",{
-      body:summary,
-			userId: props.UserData._id,
+      body: summary,
+			userId: userId
     })
   }
   const [summary, setSummary] = useState({

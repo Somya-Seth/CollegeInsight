@@ -23,7 +23,7 @@ export default function Example(props) {
         phone: info.phone,
         languages: info.languages,
         preferredGenderPronounce: info.preferredGenderPronounce,
-        profilePicture: info.profilePicture.data
+        profilePicture: info.profilePicture
     })
     const handleChange = e => {
         const { name, value } = e.target

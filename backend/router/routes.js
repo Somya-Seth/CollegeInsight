@@ -26,7 +26,6 @@ const fs = require('fs');
 
 const uploadimage = async (req, res, next) => {
     try {
-    //   const upload = multer({ storage });
     const user = {
         email:"xyz@gmail.com"
     }
@@ -39,7 +38,6 @@ const uploadimage = async (req, res, next) => {
       res.status(500).send("Server error");
     }
 };
-
 const signup = async (req, res) => {
     try {
         const { name, enrNo, email, password, role } = req.body;
@@ -79,7 +77,6 @@ const signup = async (req, res) => {
         }
     }
 }
-
 const hashPassword = async (password) => {
     try {
         let hash = bcrypt.hash(password, saltRounds)
@@ -91,7 +88,6 @@ const hashPassword = async (password) => {
     }
 
 }
-
 const getUser = async (req, res, next) => {
     const users = await User.find({ email: req.query.email });
     return res.json(users);
@@ -99,7 +95,6 @@ const getUser = async (req, res, next) => {
 const getpost = async (req, res, next) => {
     try {
         const data = await Post.find()
-
         for (var i = 0; i < data.length; i++) {
             const userData = await User.find({ _id: data[i]._doc.userId })
             data[i]._doc['userData'] = userData
@@ -108,14 +103,24 @@ const getpost = async (req, res, next) => {
     } catch (err) {
         console.log(err)
         return res.status(400).json(err)
-
+    }
+}
+const addSkills = async(req,res,next)=>{
+    try{        
+        const data = await User.findByIdAndUpdate(req.body.body.userId, { skills: req.body.body.skills }, { new: true });
+        console.log("hello",data)
+        const ret = await data.save()
+        return res.status(200).json(ret)
+    }
+    catch(err){
+        return res.status(400).json(err)
     }
 }
 const postsummary = async(req,res,next) => {
     try{
         const data = await User.findByIdAndUpdate(req.body.userId, req.body, { new: true });
         const ret = await data.save()
-        
+        return res.status(200).json(ret)
     }catch(err){
         console.log(err)
         return res.status(400).json(err)
@@ -273,4 +278,4 @@ const getProfilePicture = async(req, res) => {
 //     .status(200)
 //     .json({ message: "Successfully logged out 😏 🍀" });
 // }
-module.exports = { signup, login, getUser, post, getpost, postlike, uploadimage, postsummary, getProfilePicture }
+module.exports = { signup,addSkills, login, getUser, post, getpost, postlike, uploadimage, postsummary, getProfilePicture }
