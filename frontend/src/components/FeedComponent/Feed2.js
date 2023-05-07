@@ -212,12 +212,12 @@ export default function Feed2() {
                                         <FiEdit3 onClick={skillsModal} />
                                     </div>
                                 </div>
-                                <div className='skills'>
+                                <div style={{flexWrap:"wrap", display:"flex",flexDirection:"row", width:"100%" ,height:"20%"}} className='skills'>
                                         {
                                             showSkills && (
                                                 <>
                                                     {showSkills.map((item, index) => (
-                                                            <p style={{  }} key={index}>{item}</p>
+                                                            <p style={{ textAlign:"center" , marginRight : "5%" ,minWidth:"35%", backgroundColor:"#dce3f9", borderRadius:"200px", border:"1px solid grey" }} key={index}>{item}</p>
                                                         ))}
                                                 </>
                                             )
@@ -272,9 +272,14 @@ export default function Feed2() {
                             <div className='text__'>
                             {item.text}
                             </div>
+                            {item.image && (
+                                <>
                             <div className='post_img'>
                                 <img ></img>
                             </div>
+
+                                </>
+                            )}
                             </Card>
                             ))}
                             </>

@@ -70,7 +70,18 @@ export default function Profile(props) {
     getPost()
     getUser()
   }, [user.email]);
- 
+  
+  async function getUser() {
+    console.log(user);
+    const email = user.email;
+    try {
+      const response = await axios.get(`http://localhost:8000/profilePicture?email=${email}`);
+      console.log("Profile picture:", response.data[0]);
+      setUserData(response.data[0]);
+    } catch (err) {
+      console.log("Error occurred in profile.js:", err);
+    }
+  }
   
   console.log("image", UserData);
   console.log("imag1", UserData?.profilePicture?.contentType);
@@ -103,7 +114,7 @@ export default function Profile(props) {
                   >
                     Edit Profile
                   </Button>
-                  {showModal ? <ProfileModal userData={UserData} showModal={props} /> : null}
+                  {showModal ? <ProfileModal getUser={getUser} userData={UserData} showModal={props} /> : null}
                 </div>
                 <div className="course">{UserData.course}</div>
                 <div className="year">{UserData.year}</div>

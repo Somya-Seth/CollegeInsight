@@ -39,10 +39,10 @@ export default function Navbar() {
               title="John Abraham"
               menuVariant="dark"
             >
-              <NavDropdown.Item href="/profile">Profile</NavDropdown.Item>
-              <NavDropdown.Item href="/feed">Feed</NavDropdown.Item>
+              <NavDropdown.Item  style={{ zIndex:"999999" }} href="/profile">Profile</NavDropdown.Item>
+              <NavDropdown.Item  style={{ zIndex:"999999" }} href="/feed">Feed</NavDropdown.Item>
 
-              <NavDropdown.Item onClick={logout}>
+              <NavDropdown.Item   style={{ zIndex:"999999" }} onClick={logout}>
                 Logout
               </NavDropdown.Item>
             </NavDropdown>

@@ -9,23 +9,23 @@ export default function Example(props) {
   const handleShow = () => setShow(true);
   const submit = async () => {
     console.log(props.UserData)
-    const userId = {id:props.UserData._id}
-    const res = await axios.post("http://localhost:8000/postsummary",{
-      body: summary,
-			userId: userId
-    })
+    try{
+      const userId = props.UserData._id
+      const res = await axios.post("http://localhost:8000/postsummary",{
+        body: summary,
+        userId: userId
+      })
+      setShow(false)
+      props.getUser()
+    }catch(e){
+      console.log(e)
+    }
   }
-  const [summary, setSummary] = useState({
-    summary: "",
-    })
+  const [summary, setSummary] = useState("")
     const handleChange = e => {
-        const { name, value } = e.target
-        setSummary({
-          ...summary,
-          [name]: value
-        })
+        const value  = e.target.value
+        setSummary(value)
       }
-
   return (
     <>
       <Modal show={show} onHide={handleClose} centered>
@@ -39,7 +39,7 @@ export default function Example(props) {
         rows="10"
         onChange={handleChange}
         name="summary"
-        value = {summary.summary}
+        value = {summary}
         placeholder='Write something about yourself...'
         />
         </Modal.Body>

@@ -118,7 +118,7 @@ const addSkills = async(req,res,next)=>{
 }
 const postsummary = async(req,res,next) => {
     try{
-        const data = await User.findByIdAndUpdate(req.body.userId, req.body, { new: true });
+        const data = await User.findByIdAndUpdate(req.body.userId, {summary: req.body.body}, { new: true });
         const ret = await data.save()
         return res.status(200).json(ret)
     }catch(err){
