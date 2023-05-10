@@ -8,22 +8,17 @@ export default function Example(props) {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const submit = async () => {
-    console.log(props.UserData)
-    const userId = {id:props.UserData._id}
+    console.log("shanshank",props.UserData)
+    const userId = props.UserData._id
     const res = await axios.post("http://localhost:8000/postsummary",{
       body: summary,
 			userId: userId
     })
   }
-  const [summary, setSummary] = useState({
-    summary: "",
-    })
+  const [summary, setSummary] = useState('')
     const handleChange = e => {
         const { name, value } = e.target
-        setSummary({
-          ...summary,
-          [name]: value
-        })
+        setSummary(value)
       }
 
   return (
@@ -39,7 +34,7 @@ export default function Example(props) {
         rows="10"
         onChange={handleChange}
         name="summary"
-        value = {summary.summary}
+        value = {summary}
         placeholder='Write something about yourself...'
         />
         </Modal.Body>
