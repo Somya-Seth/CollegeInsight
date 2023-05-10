@@ -36,11 +36,9 @@ export default function Example(props) {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     const [file, setFile] = useState(null);
-
     const submit = async () => {
         try {
             console.log("pp", file)
-
             setProfile({ ...profile, profilePicture: file })
             const formData = new FormData();
             formData.append('userId', props.userData._id)
@@ -63,7 +61,7 @@ export default function Example(props) {
 
                     }
                 })
-            handleClose();
+            handleClose(false);
         }
         catch (err) {
             console.log("error occured while updating profile", err);

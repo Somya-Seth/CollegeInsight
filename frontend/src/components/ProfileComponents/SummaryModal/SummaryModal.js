@@ -9,18 +9,23 @@ export default function Example(props) {
   const handleShow = () => setShow(true);
   const submit = async () => {
     console.log("shanshank",props.UserData)
-    const userId = props.UserData._id
-    const res = await axios.post("http://localhost:8000/postsummary",{
-      body: summary,
-			userId: userId
-    })
+    try{
+      const userId = props.UserData._id
+      const res = await axios.post("http://localhost:8000/postsummary",{
+        body: summary,
+        userId: userId
+      })
+      setShow(false)
+      props.getUser()
+    }catch(e){
+      console.log(e)
+    }
   }
-  const [summary, setSummary] = useState('')
+  const [summary, setSummary] = useState("")
     const handleChange = e => {
-        const { name, value } = e.target
+        const value  = e.target.value
         setSummary(value)
       }
-
   return (
     <>
       <Modal show={show} onHide={handleClose} centered>
