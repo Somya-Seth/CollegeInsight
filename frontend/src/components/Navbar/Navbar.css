@@ -4,9 +4,9 @@
     background-color: #86858a;
     color: white;
     display: flex;
-    position: fixed;
+    /* position: fixed;
     top:0;
-    z-index:9999;
+    z-index:9999; */
 
     justify-content: space-between;
     padding: 0rem 2rem 0rem 2rem;
