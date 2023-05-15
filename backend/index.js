@@ -241,3 +241,20 @@ app.get('/postImage', async function(req, res) {
 
 app.use("/conversations", conversationRoute);
 app.use("/messages", messageRoute);
+
+app.get('/user', async function(req, res) {
+    try {
+        await router.getUserById(req, res);
+    }catch(err) {
+        res.status(400).send({message: 'error while getting friend'})
+    }
+})
+
+app.get('/allUsers', async function(req, res) {
+    try{
+        await router.getAllUsers(req, res);
+    }
+    catch(err) {
+        res.status(400).send({message: 'error while getting all users'})
+    }
+})

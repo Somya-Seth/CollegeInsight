@@ -6,6 +6,7 @@ import ChatOnline from "../../src/components/chatOnline/ChatOnline";
 import { useContext, useEffect, useRef, useState } from "react";
 import { AuthContext } from "../../src/Context/AuthContext";
 import axios from "axios";
+import Navbar from '../components/Navbar/Navbar'
 import { io } from "socket.io-client";
 
 export default function Messenger() {
@@ -15,6 +16,11 @@ export default function Messenger() {
   const [newMessage, setNewMessage] = useState("");
   const [arrivalMessage, setArrivalMessage] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState([]);
+  const [userData, setUserData] = useState([]);
+  const [allUsers, setAllUsers] = useState([]);
+  const [searchParam] = useState(["name"]);
+  const [usersList, setUsersList] = useState([])
+  const [searchQuery, setSearchQuery] = useState('')
   const socket = useRef();
   const { user } = useContext(AuthContext);
   const scrollRef = useRef();
@@ -30,6 +36,21 @@ export default function Messenger() {
     });
   }, []);
 
+  useEffect(()=>{
+    (async() => {
+      await axios.get('http://localhost:8000/users', { params: user }).then(res => {
+        setUserData(res.data[0])
+    }).catch(err => {
+      console.log("error occured in messenger", err);
+    })
+    await axios.get('http://localhost:8000/allUsers', {params: user}).then(res => {
+      setAllUsers(res.data)
+    }).catch(err => {
+      console.log('error occured while getting all users in frontend', err)
+    })
+    })()
+  }, [])
+
   useEffect(() => {
     arrivalMessage &&
       currentChat?.members.includes(arrivalMessage.sender) &&
@@ -37,34 +58,36 @@ export default function Messenger() {
   }, [arrivalMessage, currentChat]);
 
   useEffect(() => {
-    socket.current.emit("addUser", user._id);
-    socket.current.on("getUsers", (users) => {
-      // setOnlineUsers(
-      //   user.followings.filter((f) => users.some((u) => u.userId === f))
-      // );
-    });
-  }, [user]);
+    socket.current.emit("addUser", userData._id);
+    // socket.current.on("getUsers", (users) => {
+    //   // setOnlineUsers(
+    //   //   user.followings.filter((f) => users.some((u) => u.userId === f))
+    //   // );
+    // });
+  }, [userData]);
+
 
   useEffect(() => {
     const getConversations = async () => {
-      // try {
-      //   const res = await axios.get("/conversations/" + user._id);
-      //   setConversations(res.data);
-      // } catch (err) {
-      //   console.log(err);
-      // }
+      try {
+        const res = await axios.get("http://localhost:8000/conversations/" + userData._id);
+        setConversations(res.data);
+        setUsersList(res.data)
+      } catch (err) {
+        console.log(err);
+      }
     };
     getConversations();
-  }, [user._id]);
+  }, [userData._id]);
 
   useEffect(() => {
     const getMessages = async () => {
-      // try {
-      //   const res = await axios.get("/messages/" + currentChat?._id);
-      //   setMessages(res.data);
-      // } catch (err) {
-      //   console.log(err);
-      // }
+      try {
+        const res = await axios.get("http://localhost:8000/messages/" + currentChat?._id);
+        setMessages(res.data);
+      } catch (err) {
+        console.log(err);
+      }
     };
     getMessages();
   }, [currentChat]);
@@ -72,25 +95,25 @@ export default function Messenger() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const message = {
-      sender: user._id,
+      sender: userData._id,
       text: newMessage,
-      conversationId: currentChat._id,
+      conversationId: currentChat?._id,
     };
 
-    const receiverId = currentChat.members.find(
-      (member) => member !== user._id
-    );
+    // const receiverId = currentChat?.members?.find(
+    //   (member) => member !== userData._id
+    // );
 
-    socket.current.emit("sendMessage", {
-      senderId: user._id,
-      receiverId,
-      text: newMessage,
-    });
+    // socket.current.emit("sendMessage", {
+    //   senderId: userData._id,
+    //   receiverId,
+    //   text: newMessage,
+    // });
 
     try {
-      // const res = await axios.post("/messages", message);
-      // setMessages([...messages, res.data]);
-      // setNewMessage("");
+      const res = await axios.post("http://localhost:8000/messages", message);
+      setMessages([...messages, res.data]);
+      setNewMessage("");
     } catch (err) {
       console.log(err);
     }
@@ -100,18 +123,39 @@ export default function Messenger() {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  const searchUsers = (e) => {
+    setSearchQuery(e.target.value)
+    if(e.target.value == ''){
+      setConversations(usersList)
+      return
+    }
+    const arr =  allUsers.filter((item) => {
+      return searchParam.some((newItem) => {
+          return (
+              item[newItem]
+                  .toString()
+                  .toLowerCase()
+                  .indexOf(e.target.value.toLowerCase()) > -1
+          );
+      });
+    });
+    setConversations([...arr])
+  }
+
   return (
     <>
-      {/* <Topbar /> */}
+     <Navbar />
       <div className="messenger">
         <div className="chatMenu">
           <div className="chatMenuWrapper">
-            <input placeholder="Search for friends" className="chatMenuInput" />
-            {conversations.map((c) => (
+            <input placeholder="Search for friends" className="chatMenuInput" onChange={searchUsers}/>
+            {
+            conversations.map((c) => (
               <div onClick={() => setCurrentChat(c)}>
-                <Conversation conversation={c} currentUser={user} />
+                <Conversation conversation={c} currentUser={userData} />
               </div>
-            ))}
+            ))
+            }
           </div>
         </div>
         <div className="chatBox">
@@ -121,7 +165,7 @@ export default function Messenger() {
                 <div className="chatBoxTop">
                   {messages.map((m) => (
                     <div ref={scrollRef}>
-                      <Message message={m} own={m.sender === user._id} />
+                      <Message message={m} own={m.sender === userData._id} />
                     </div>
                   ))}
                 </div>
@@ -148,7 +192,7 @@ export default function Messenger() {
           <div className="chatOnlineWrapper">
             <ChatOnline
               onlineUsers={onlineUsers}
-              currentId={user._id}
+              currentId={userData._id}
               setCurrentChat={setCurrentChat}
             />
           </div>

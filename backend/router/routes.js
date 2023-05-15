@@ -271,6 +271,25 @@ const getProfilePicture = async(req, res) => {
     }
 }
 
+const getUserById = async(req, res) => {
+    try {
+        console.log("req query userId", req.query.userId)
+        const user = await User.findById(req.query.userId);
+        res.status(200).json(user)
+      } catch (err) {
+        res.status(500).json(err);
+      }
+}
+
+const getAllUsers = async(req, res) => {
+    try{
+        const allUsers = await User.find({email: {$nin: [req.query.email]}})
+        res.status(200).json(allUsers)
+    }catch(err) {
+        res.status(500).json(err)
+    }
+}
+
 // const logout = async(req, res) => {
 //     const verify = verify()
 //     return res
@@ -278,4 +297,4 @@ const getProfilePicture = async(req, res) => {
 //     .status(200)
 //     .json({ message: "Successfully logged out 😏 🍀" });
 // }
-module.exports = { signup,addSkills, login, getUser, post, getpost, postlike, uploadimage, postsummary, getProfilePicture }
+module.exports = { signup,addSkills, login, getUser, post, getpost, postlike, uploadimage, postsummary, getProfilePicture, getUserById, getAllUsers }
