@@ -16,29 +16,28 @@
 .feed_left {
     width: 25%;
     display: flex;
-    position: fixed;
+    /* position: fixed;
     top:4rem;
-    z-index: 9999;
+    z-index: 9999; */
     flex-direction: column;
 }
 .feed_left>*, .feed_middle>*, .feed_right>* {
     margin: 1rem;
 }
 .feed_middle {
-    margin-top:5.2%;
-    margin-left: 30%;
+    /* margin-top:5.2%;
+    margin-left: 30%; */
     width: 40%;
     /* overflow: scroll; */
 }
 .feed_right {
     margin-right: 5%;
     width: 25%;
-    position: fixed;
+    /* position: fixed;
     
-    /* position: -webkit-sticky; */
     top:4rem;
     right: 0;
-    z-index: 0 ;
+    z-index: 0 ; */
 }
 .feed_left_top {
     min-height: 10rem;
