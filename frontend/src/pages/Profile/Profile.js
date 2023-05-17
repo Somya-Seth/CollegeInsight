@@ -6,6 +6,7 @@ import { AuthContext } from '../../Context/AuthContext';
 import "./Profile.css";
 import axios from 'axios';
 import Buffer from 'buffer';
+import userImage from '../../image/noAvatar.png'
 
 import {
   AiOutlineMail,
@@ -86,8 +87,8 @@ export default function Profile(props) {
   console.log("image", UserData);
   console.log("imag1", UserData?.profilePicture?.contentType);
   console.log("imag2", UserData?.profilePicture?.data?.data);
-  // let image = `data:{UserData.profilePicture.contentType};base64,$(UserData.profilePicture.data.data.toString('base64'))`;
-  if(UserData){
+
+  if(UserData && UserData?.profilePicture){
     var blob = new Blob([Int8Array.from(UserData?.profilePicture?.data?.data)], {type: UserData?.profilePicture?.contentType });
     var image = window.URL.createObjectURL(blob);
     console.log("final image", image);
@@ -101,7 +102,10 @@ export default function Profile(props) {
           <Card className="left_top">
             <div className="upper_background"></div>
             <div className="profile_image">
-              <img className = 'profile_picture' src={image}></img>
+              {UserData?.profilePicture ? 
+              <img className = 'profile_picture' src={image}></img> :
+              <img className="profile_picture" src={userImage}/>
+              }
             </div>
             <div className="lower_background">
               <div className="imp_details">
@@ -119,9 +123,9 @@ export default function Profile(props) {
                 <div className="course">{UserData.course}</div>
                 <div className="year">{UserData.year}</div>
               </div>
-              <div className="rating_btn">
+              {/* <div className="rating_btn">
                 <Rating name="half-rating" defaultValue={2} precision={0.5} />
-              </div>
+              </div> */}
             </div>
           </Card>
           <Card className="left_middle">

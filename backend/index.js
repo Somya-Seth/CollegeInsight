@@ -29,11 +29,8 @@ const corsOptions = {
     credentials: true,
     optionSuccessStatus: 200,
 }
-// const { UserModule } = require("../models/user")
 
 app.use(cors(corsOptions))
-
-// app.use('/uploads',express.static('uploads'))
 
 const port = process.env.PORT || 8000
 
@@ -46,7 +43,6 @@ const { resourceLimits } = require('worker_threads');
 
 connection();
 app.get('/setcookie', (req, res) => {
-    // res.cookie("divyanshi", "paras", { expires: new Date(new Date().getTime() + 5 * 60 * 1000),path:"/",httpOnly:true,secure:false,domain:"localhost"});
     res.cookie("divyanshi", "paras", { expires: new Date(new Date().getTime() + 5 * 60 * 1000) });
     res.send('Cookie have been saved successfully');
 });
@@ -94,7 +90,6 @@ app.get('/getpost', async function (req,res){
     }
 })
 
-
 app.post('/login', async function (req, res) {
     try {
         await router.login(req, res)
@@ -114,29 +109,6 @@ app.post('/upload', async function (req, res) {
     }
 })
 
-const uploadimage = async (req, res, next) => {
-    // try {
-    //   const upload = multer({ storage });
-    //   upload.single("image")(async (req, res, err) => {
-    //     if (err) {
-    //       return res.status(400).json({ message: "Error uploading file" });
-    //     }
-    //     const imageUrl = `http://localhost:8000/${req.file.path}`;
-    //     return res.json({ imageUrl });
-    //   });
-    // } catch (error) {
-    //   console.log(error);
-    //   res.status(500).send("Server error");
-    // }
-  };
-// app.post('/add', upload.single('image'), async function (req, res) {
-//     try{
-//         await router.uploadimage(req, res)
-//     }
-//     catch(err){
-//         console.log("error", err);
-//     }
-// })
 app.post('/postsummary', async function(req,res){
     try {
         await router.postsummary(req,res)

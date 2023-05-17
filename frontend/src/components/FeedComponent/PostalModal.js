@@ -236,10 +236,6 @@ export default function PostModal(props) {
 		setImageFile(image);
 	}
 
-
-	
-
-
 	return (
 		<>
 			{props.showModal === true && (
@@ -259,8 +255,6 @@ export default function PostModal(props) {
 							<Editor>
 
 								<textarea value={editorText} onChange={(event) => setEditorText(event.target.value)} placeholder="What do you want to talk about?" autoFocus={true} />
-
-
 
 							</Editor>
 						</SharedContent>

@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import "./Conversation.css";
 // import "../../image/noAvatar.png"
 
-export default function Conversation({ conversation, currentUser }) {
+export default function Conversation({ conversation, currentUser}) {
   const [user, setUser] = useState(null);
   const PF = process.env.REACT_APP_PUBLIC_FOLDER;
   // const PF = '';
@@ -28,10 +28,6 @@ export default function Conversation({ conversation, currentUser }) {
     };
     getUser();
   }, [currentUser, conversation]);
-
-  useEffect(() => {
-    
-  }, [])
 
   return (
     <div className="conversation">

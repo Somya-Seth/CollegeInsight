@@ -1,4 +1,4 @@
-import React from "react";
+import {React, useState, useEffect} from "react";
 import TextField from "@mui/material/TextField";
 import "./Navbar.css";
 import Dropdown from 'react-bootstrap/Dropdown';
@@ -6,8 +6,9 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import {AiFillHome} from "react-icons/ai"
 import {BsFillChatDotsFill} from "react-icons/bs";
 import { AuthContext } from '../../Context/AuthContext';
-import { useEffect, useState, useContext } from "react";
+import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from 'axios'
 
 export default function Navbar() {
   const { user } = useContext(AuthContext);
@@ -16,6 +17,17 @@ export default function Navbar() {
     localStorage.removeItem("user")
     navigate('/login')
   }
+
+  const [userData, setUserData] = useState([])
+  useEffect(() => {
+    (async() => {
+      await axios.get('http://localhost:8000/users', { params: user }).then(res => {
+        setUserData(res.data[0])
+    }).catch(err => {
+      console.log("error occured in messenger", err);
+    })
+    })()
+  }, [])
   return (
     <div className="navbar">
       {/* <div className="navbar_left">
@@ -36,7 +48,7 @@ export default function Navbar() {
         <div className="avatar"></div>
         <NavDropdown
               id="nav-dropdown-dark-example"
-              title="John Abraham"
+              title={userData?.name}
               menuVariant="dark"
             >
               <NavDropdown.Item  style={{ zIndex:"999999" }} href="/profile">Profile</NavDropdown.Item>

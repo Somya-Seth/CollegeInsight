@@ -97,12 +97,13 @@
 .activity_card {
     padding: 0.5rem;
     font-size: 1.1rem;
-    margin-bottom: 1rem;
+    margin-bottom: 0.8rem;
 }
 .timeago__ {
     display: flex;
     margin-left: 0%;
-    font-size: 1rem;
+    font-size: 0.7rem;
+    margin-top: -0.5rem;
 }
 .post_img {
     min-height: 10rem;

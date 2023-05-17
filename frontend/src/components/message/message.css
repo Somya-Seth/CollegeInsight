@@ -37,3 +37,11 @@
     background-color: rgb(245, 241, 241);
     color: black;
 }
+
+.noConversationText {
+    position: absolute;
+    top: 10%;
+    font-size: 45px;
+    color: rgb(224, 220, 220);
+    cursor: default;
+}
