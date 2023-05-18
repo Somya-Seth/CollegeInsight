@@ -18,6 +18,11 @@ export default function Navbar() {
     navigate('/login')
   }
 
+  const messenger = ()=>{
+
+    navigate("/messenger")
+  }
+
   const [userData, setUserData] = useState([])
   useEffect(() => {
     (async() => {
@@ -41,7 +46,7 @@ export default function Navbar() {
       <div className="college_name">SR GROUP OF INSTITUTIONS</div>
       <div className="icons">
       <AiFillHome />
-      <BsFillChatDotsFill />
+      <BsFillChatDotsFill onClick={messenger}/>
       </div>
       
       <div className="last">
