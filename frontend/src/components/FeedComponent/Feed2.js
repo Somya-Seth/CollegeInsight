@@ -13,6 +13,7 @@ import PostalModal from "./PostalModal";
 import { AuthContext } from '../../Context/AuthContext';
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
+import { format } from "timeago.js";
 
 const CommonBox = styled.div`
 	text-align: center;
@@ -92,6 +93,7 @@ export default function Feed2() {
     const [skills, setSkills] = useState([]);
     const [newSkills, setNewSkills] = useState('');
     const [posts, setData] = useState('');
+    const [recentlyPosted, setRecentlyPosted] = useState('')
     const handleChange = e => {
         const name = e.target.value
         setNewSkills(name)
@@ -180,6 +182,8 @@ export default function Feed2() {
         getPost()
     }, [userData]);
 
+    console.log('recentlyPosted', recentlyPosted);
+
     return (
         <>
             <Navbar />
@@ -267,7 +271,7 @@ export default function Feed2() {
                                                         <img></img>
                                                     </div>
                                                     <p style={{ width: '70%', marginTop: '0.5rem' }}>{item?.userData[0]?.name}</p>
-                                                    <div className='timeago__'>{item?.date}</div>
+                                                    <div className='timeago__'>{format(item?.date)}</div>
                                                 </div>
                                                 <div className='text__'>
                                                     {item.text}
@@ -348,7 +352,7 @@ export default function Feed2() {
                     </Modal.Footer>
                 </Modal>
             </div>
-            <PostalModal props={[userData, showPhotoModal, showDocModal, showModal]} UserData={userData} showPhotoModal={showPhotoModal} showDocModal={showDocModal} showModal={showModal} uploadPhoto={uploadPhoto} uploadDoc={uploadDoc} clickHandler={clickHandler} />
+            <PostalModal props={[userData, showPhotoModal, showDocModal, showModal]} UserData={userData} showPhotoModal={showPhotoModal} showDocModal={showDocModal} showModal={showModal} uploadPhoto={uploadPhoto} uploadDoc={uploadDoc} clickHandler={clickHandler} recentlyPosted={recentlyPosted}/>
 
             {/* {
             showDocModal  == true?

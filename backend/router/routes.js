@@ -91,8 +91,8 @@ const getpost = async (req, res, next) => {
         // return res.status(200).json(data)
         console.log("req.query", req.query);
         const response = await Post.find({
-            userId: { $ne: req.query._id } 
-        })
+            userId: { $ne: req.query._id },
+        }).sort({date: -1})
         console.log("res.data in posts", response.data);
         for(let i=0;i<response.length;i++){
             const userData = await User.find({ _id: response[i]._doc.userId })
@@ -129,11 +129,11 @@ const post = async (req, res, next) => {
     try {
         const timestamp = Date.now()
         const date = new Date(timestamp);
-        const dateString = date.toLocaleDateString();
+        // const dateString = date.toLocaleDateString();
         const data = new Post({
             userId: req.body.userId,
             text: req.body.text,
-            date: dateString,
+            date: date,
         })
         await data.save()
         return res.status(200).json(req.body)
