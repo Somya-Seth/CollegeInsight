@@ -29,13 +29,14 @@
     /* margin-left: -30rem; */
     font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
-.avatar {
+.avatar>img {
     border-radius: 50%;
     border: 1px solid white;
     width: 2rem;
     height: 2rem;
     display: inline-block;
     margin-right: 0.5rem;
+    background-size: cover;
 }
 .last {
     display: flex;
