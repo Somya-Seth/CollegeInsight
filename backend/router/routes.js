@@ -125,6 +125,17 @@ const postsummary = async(req,res,next) => {
     }
 }
 
+const getSummary = async(req,res,next) => {
+    try{
+        const data = await User.findById(req.body.userId);
+        const ret = await data.save()
+        return res.status(200).json(ret)
+    }catch(err){
+        console.log(err)
+        return res.status(400).json(err)
+    }
+}
+
 const post = async (req, res, next) => {
     try {
         const timestamp = Date.now()
@@ -172,12 +183,6 @@ const login = async (req, res) => {
         }
         console.log("userExist", userExist)
         if (userExist) {
-
-            // const accessToken = generateAccessToken(user)
-            // const refreshToken = generateRefreshToken(user)
-            // refreshTokens.push(refreshToken)
-            // console.log("accesstoken", accessToken)
-            // await  axios.get("http://localhost:8000/setcookie", {withCredentials: true})
             return res.status(200).json({ message: 'logged in succesfully.. continue with your work' });
         } else {
             res.status(400).send({
@@ -193,7 +198,6 @@ const login = async (req, res) => {
 
 const getProfilePicture = async(req, res) => {
     const user = await User.find({email: req.query.email})
-    console.log(user);
     if(user){
         res.status(200).json(user)
     }
@@ -221,4 +225,4 @@ const getAllUsers = async(req, res) => {
     }
 }
 
-module.exports = { signup,addSkills, login, getUser, post, getpost, postlike, uploadimage, postsummary, getProfilePicture, getUserById, getAllUsers }
+module.exports = { signup,addSkills, login, getUser, post, getpost, postlike, uploadimage, postsummary, getProfilePicture, getUserById, getAllUsers, getSummary }

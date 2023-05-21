@@ -29,14 +29,20 @@ export default function Conversation({ conversation, currentUser}) {
     getUser();
   }, [currentUser, conversation]);
 
+  if(user && user?.profilePicture){
+    var blob = new Blob([Int8Array.from(user?.profilePicture?.data?.data)], {type: user?.profilePicture?.contentType });
+    var image = window.URL.createObjectURL(blob);
+    console.log("final image", image);
+  }
+
   return (
     <div className="conversation">
       <img
         className="conversationImg"
         src={
           user?.profilePicture
-            ? PF + user.profilePicture
-            : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQugI-fjEQY6QgiF50IgnxXivFmtuQS3BBbnA&usqp=CAU/200X200"
+            ? image
+            : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnEx5bhTjsFgrSZ2D0q6j5XKlGpXcR6An3YxL6X1GB&s"
             // : PF + 'person/noAvatar.png'
         }
         alt=""

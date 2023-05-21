@@ -1,31 +1,39 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
-import TextField from '@mui/material/TextField';
 import axios from 'axios'
-export default function Example(props) {
-  const [show, setShow] = useState(props.showModal2);
-  const handleClose = () => setShow(false);
+export default function Example({UserData, showModal2, closeSummaryModal}) {
+  const [show, setShow] = useState(showModal2);
+  const handleClose = () => {
+    setShow(false);
+    showModal2 = false
+  }
   const handleShow = () => setShow(true);
   const submit = async () => {
-    console.log("shanshank",props.UserData)
     try{
-      const userId = props.UserData._id
+      const userId = UserData._id
       const res = await axios.post("http://localhost:8000/postsummary",{
         body: summary,
         userId: userId
       })
       setShow(false)
-      props.getUser()
+      // props.getUser()
+      closeSummaryModal(UserData.summary)
     }catch(e){
       console.log(e)
     }
   }
-  const [summary, setSummary] = useState("")
+  const [summary, setSummary] = useState('')
     const handleChange = e => {
         const value  = e.target.value
         setSummary(value)
-      }
+        UserData.summary = value
+    }
+
+  useEffect(() => {
+    setSummary(UserData.summary)
+  }, [])
+
   return (
     <>
       <Modal show={show} onHide={handleClose} centered>

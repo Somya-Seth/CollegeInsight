@@ -51,11 +51,11 @@ app.get('/cookie', async (req, res) => {
     console.log("cookie", cookie)
     res.send(cookie)
 })
-app.post('/addSkills', async function(req,res){
-    try{
-        await router.addSkills(req,res);
+app.post('/addSkills', async function (req, res) {
+    try {
+        await router.addSkills(req, res);
     }
-    catch(err){
+    catch (err) {
         console.log("error", err)
     }
 })
@@ -68,24 +68,24 @@ app.post('/signup', async function (req, res) {
         console.log("error", err)
     }
 })
-app.post('/post', async function (req,res){
-    try{
-        await router.post(req,res)
-    }catch (err) {
+app.post('/post', async function (req, res) {
+    try {
+        await router.post(req, res)
+    } catch (err) {
         console.log("error", err)
     }
 })
-app.post('/postlike', async function(req,res){
-    try{
-        await router.postlike(req,res)
-    }catch(err){
+app.post('/postlike', async function (req, res) {
+    try {
+        await router.postlike(req, res)
+    } catch (err) {
         console.log(err)
     }
 })
-app.get('/getpost', async function (req,res){
-    try{
-        await router.getpost(req,res)
-    }catch (err) {
+app.get('/getpost', async function (req, res) {
+    try {
+        await router.getpost(req, res)
+    } catch (err) {
         console.log("error", err)
     }
 })
@@ -97,55 +97,62 @@ app.post('/login', async function (req, res) {
     catch (err) {
         console.log("error", err)
     }
-}) 
+})
 
 app.post('/upload', async function (req, res) {
-    try{
-       console.log("req.file 1", req.file);
-       await router.uploadimage(req, res)
+    try {
+        console.log("req.file 1", req.file);
+        await router.uploadimage(req, res)
     }
-    catch(err){
+    catch (err) {
         console.log("error", err);
     }
 })
 
-app.post('/postsummary', async function(req,res){
+app.post('/postsummary', async function (req, res) {
     try {
-        await router.postsummary(req,res)
+        await router.postsummary(req, res)
     }
-    catch(err){
+    catch (err) {
         console.log("error", err);
+    }
+})
+app.get('/getSummary', async function (req, res) {
+    try {
+        await router.getSummary(req, res)
+    } catch (err) {
+        console.loh("error", err)
     }
 })
 app.get('/users', async function (req, res) {
     try {
-    
-      await router.getUser(req, res)
+
+        await router.getUser(req, res)
 
     } catch (err) {
-      console.log(err);
-      res.status(500).json({ message: 'Server error' });
+        console.log(err);
+        res.status(500).json({ message: 'Server error' });
     }
-  });
+});
 
-  var storage = multer.diskStorage({
+var storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        console.log("file",file)
+        console.log("file", file)
         cb(null, 'uploads');
     },
     filename: (req, file, cb) => {
-        console.log("file",file)
+        console.log("file", file)
         cb(null, file.originalname);
     }
-  });
+});
 var upload = multer({ storage: storage });
-app.post('/postImage', upload.single("postImage"), async function(req,res){
-    try{
+app.post('/postImage', upload.single("postImage"), async function (req, res) {
+    try {
         console.log("mksdkl", req.body);
-        console.log("req file",req.file)
+        console.log("req file", req.file)
         const xyz = path.join(__3dirname, "../" + '/uploads')
         console.log("dirname", xyz);
-        req.body.postImage = fs.readFileSync(path.join(__dirname, "../backend" + '/uploads'+"/"+req.file.filename))
+        req.body.postImage = fs.readFileSync(path.join(__dirname, "../backend" + '/uploads' + "/" + req.file.filename))
         const obj = {
             postImage: {
                 data: req.body.postImage,
@@ -154,79 +161,78 @@ app.post('/postImage', upload.single("postImage"), async function(req,res){
         }
         req.body.postImage = obj.postImage
         req.body.postImage.contentType = 'image/png'
-        const data = await User.findByIdAndUpdate({_id:req.body.userId}, req.body, { });
+        const data = await User.findByIdAndUpdate({ _id: req.body.userId }, req.body, {});
         console.log("user data", data);
         await data.save()
-    }catch (err){
+    } catch (err) {
         console.log("erroororroror", err.message);
         res.status(502).json({ message: 'Server error' });
     }
 })
-app.post('/postprofile', upload.single("profilePicture"), async function(req,res){
-    try{
+app.post('/postprofile', upload.single("profilePicture"), async function (req, res) {
+    try {
         console.log("mksdkl", req.body);
-        console.log("req file",req.file)
+        console.log("req file", req?.file)
         const xyz = path.join(__dirname, "../" + '/uploads')
         console.log("dirname", xyz);
-        req.body.profilePicture = fs.readFileSync(path.join(__dirname, "../backend" + '/uploads'+"/"+req.file.filename))
-        const obj = {
-            profilePicture: {
-                data: req.body.profilePicture,
-                contentType: 'image/png'
-            }
+        if (req.body.profilePicture == 'null') {
+            const pf = await User.findById(req.body.userId)
+            req.body.profilePicture = pf.profilePicture
         }
-        req.body.profilePicture = obj.profilePicture
-        req.body.profilePicture.contentType = 'image/png'
-        const data = await User.findByIdAndUpdate({_id:req.body.userId}, req.body, { });
+        else {
+            req.body.profilePicture = fs.readFileSync(path.join(__dirname, "../backend" + '/uploads' + "/" + req?.file?.filename))
+            const obj = {
+                profilePicture: {
+                    data: req.body.profilePicture,
+                    contentType: 'image/png'
+                }
+            }
+            req.body.profilePicture = obj.profilePicture
+            req.body.profilePicture.contentType = 'image/png'
+        }
+        const data = await User.findByIdAndUpdate({ _id: req.body.userId }, req.body, {});
         console.log("user data", data);
         await data.save()
-    }catch (err){
+    } catch (err) {
         console.log("erroororroror", err.message);
         res.status(502).json({ message: 'Server error' });
     }
 })
 
-app.get('/profilePicture', async function(req, res) {
-    try{
+app.get('/profilePicture', async function (req, res) {
+    try {
         await router.getProfilePicture(req, res);
-    }catch(err) {
+    } catch (err) {
         console.log(err.message);
-        res.status(400).send({message: 'error while fetching image'})
+        res.status(400).send({ message: 'error while fetching image' })
     }
 })
-app.get('/profilePicture', async function(req, res) {
-    try{
-        await router.getProfilePicture(req, res);
-    }catch(err) {
-        console.log(err.message);
-        res.status(400).send({message: 'error while fetching image'})
-    }
-})
-app.get('/postImage', async function(req, res) {
-    try{
+
+app.get('/postImage', async function (req, res) {
+    try {
         await router.getPostImage(req, res);
-    }catch(err) {
+    } catch (err) {
         console.log(err.message);
-        res.status(400).send({message: 'error while fetching image'})
+        res.status(400).send({ message: 'error while fetching image' })
     }
 })
 
 app.use("/conversations", conversationRoute);
 app.use("/messages", messageRoute);
 
-app.get('/user', async function(req, res) {
+app.get('/user', async function (req, res) {
     try {
         await router.getUserById(req, res);
-    }catch(err) {
-        res.status(400).send({message: 'error while getting friend'})
+    } catch (err) {
+        res.status(400).send({ message: 'error while getting friend' })
     }
 })
 
-app.get('/allUsers', async function(req, res) {
-    try{
+app.get('/allUsers', async function (req, res) {
+    try {
         await router.getAllUsers(req, res);
     }
-    catch(err) {
-        res.status(400).send({message: 'error while getting all users'})
+    catch (err) {
+        res.status(400).send({ message: 'error while getting all users' })
     }
 })

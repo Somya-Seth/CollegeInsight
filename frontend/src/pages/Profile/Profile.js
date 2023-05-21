@@ -73,7 +73,6 @@ export default function Profile(props) {
   }, [user.email]);
   
   async function getUser() {
-    console.log(user);
     const email = user.email;
     try {
       const response = await axios.get(`http://localhost:8000/profilePicture?email=${email}`);
@@ -94,6 +93,33 @@ export default function Profile(props) {
     console.log("final image", image);
   }
 
+  const closeSummaryModal = (val) => {
+    UserData.summary = val
+    setShowModal2(false)
+  }
+
+  const closeProfileModal = async(val, file) => {
+    console.log("value", val)
+    console.log("file", file)
+    if(file == null){
+      UserData.profilePicture = val.profilePicture
+      UserData.name = val.name
+      UserData.course = val.course
+      UserData.branch = val.branch
+      UserData.year = val.year
+      UserData.email = val.email
+      UserData.linkedin = val.linkedin
+      UserData.github = val.github
+      UserData.languages = val.languages
+      UserData.phone = val.phone
+    }
+    else{
+      await getUser()
+    }
+    window.location.reload(true)
+    setShowModal(false)
+  }
+
   return (
     <>
       <Navbar />
@@ -104,7 +130,7 @@ export default function Profile(props) {
             <div className="profile_image">
               {UserData?.profilePicture ? 
               <img className = 'profile_picture' src={image}></img> :
-              <img className="profile_picture" src={userImage}/>
+              'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnEx5bhTjsFgrSZ2D0q6j5XKlGpXcR6An3YxL6X1GB&s'
               }
             </div>
             <div className="lower_background">
@@ -118,7 +144,7 @@ export default function Profile(props) {
                   >
                     Edit Profile
                   </Button>
-                  {showModal ? <ProfileModal getUser={getUser} userData={UserData} showModal={props} /> : null}
+                  {showModal ? <ProfileModal getUser={getUser} userData={UserData} showModal={true} closeProfileModal={closeProfileModal}/> : null}
                 </div>
                 <div className="course">{UserData.course}</div>
                 <div className="year">{UserData.year}</div>
@@ -138,7 +164,7 @@ export default function Profile(props) {
                 <FiEdit3  />
               </div>
             </div>
-            {showModal2 ? <SummaryModal UserData={UserData} showModal2={props}></SummaryModal> : null}
+            {showModal2 ? <SummaryModal UserData={UserData} showModal2={showModal2} closeSummaryModal={closeSummaryModal}></SummaryModal> : null}
             <div className="summary_text">
               {UserData.summary}
             </div>

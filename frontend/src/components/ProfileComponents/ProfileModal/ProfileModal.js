@@ -7,10 +7,10 @@ import axios from 'axios';
 
 
 
-export default function Example(props) {
-    const [show, setShow] = useState(props.showModal);
-    const [info, showUserInfo] = useState(props.userData)
-    console.log("props.userData", props.userData);
+export default function Example({getUser, userData, showModal, closeProfileModal}) {
+    const [show, setShow] = useState(true);
+    const [info, showUserInfo] = useState(userData)
+    console.log("userData", userData);
 
     const [profile, setProfile] = useState({
         name: info.name,
@@ -33,15 +33,18 @@ export default function Example(props) {
         })
         console.log("profile", profile)
     }
-    const handleClose = () => setShow(false);
+    const handleClose = () => {
+        setShow(false);
+    }
     const handleShow = () => setShow(true);
     const [file, setFile] = useState(null);
     const submit = async () => {
         try {
-            console.log("pp", file)
+            handleClose()
+            closeProfileModal(profile, file)
             setProfile({ ...profile, profilePicture: file })
             const formData = new FormData();
-            formData.append('userId', props.userData._id)
+            formData.append('userId', userData._id)
             formData.append('profilePicture', file)
             formData.append('name', profile.name)
             formData.append('course', profile.course)
@@ -58,10 +61,9 @@ export default function Example(props) {
                 {
                     Headers: {
                         "Content-Type": "multipart/form-data"
-
                     }
                 })
-            handleClose(false);
+            // handleClose();
         }
         catch (err) {
             console.log("error occured while updating profile", err);
@@ -75,7 +77,7 @@ export default function Example(props) {
                     <Modal.Title >Edit Profile</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <Form enctype="multipart/form-data">
+                    <Form encType="multipart/form-data">
                         <Form.Group className="mb-3">
                             <Form.Label >Upload Profile Picture</Form.Label>
                             <Form.Control name="profilePicture" type="file" onChange={(e) => { setFile(e.target.files[0]) }} placeholder="No file choosen" />
