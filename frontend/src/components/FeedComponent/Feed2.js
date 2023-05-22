@@ -14,6 +14,8 @@ import { AuthContext } from '../../Context/AuthContext';
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import { format } from "timeago.js";
+import Table from 'react-bootstrap/Table';
+import SweetAlert from 'react-bootstrap-sweetalert'
 
 const CommonBox = styled.div`
 	text-align: center;
@@ -94,6 +96,11 @@ export default function Feed2() {
     const [newSkills, setNewSkills] = useState('');
     const [posts, setData] = useState('');
     const [recentlyPosted, setRecentlyPosted] = useState('')
+    const [showBlockModal, setShowBlockModal] = useState(false)
+    const [allStudents, setAllStudents] = useState([])
+    const [showAlert, setShowAlert] = useState(false)
+    const [student, setStudent] = useState('');
+
     const handleChange = e => {
         const name = e.target.value
         setNewSkills(name)
@@ -183,6 +190,33 @@ export default function Feed2() {
     }, [userData]);
 
     console.log('recentlyPosted', recentlyPosted);
+
+    const blockModalClicked = async () => {
+        setShowBlockModal(!showBlockModal)
+        await axios.get(`http://localhost:8000/allStudents/?email=${user.email}&role=${userData?.role}`).then(res => {
+            setAllStudents(res.data)
+        }).catch(err => {
+            console.log('error while fetching all students', err)
+        })
+    }
+
+    const blockStudent = async () => {
+        setShowAlert(!showAlert)
+        await axios.get(`http://localhost:8000/blockStudent/?userId=${student?._id}`).then(res => {
+        }).catch(err => {
+            console.log("error occured while blocking a student");
+        })
+    }
+
+    const showProfilePicture = (val) => {
+        var blob = new Blob([Int8Array.from(val?.data?.data)], {type: val?.contentType });
+        return window.URL.createObjectURL(blob);
+    }
+
+    const blockAStudent = (stud) => {
+       setShowAlert(!showAlert)
+       setStudent(stud)
+    }
 
     return (
         <>
@@ -296,6 +330,10 @@ export default function Feed2() {
                     <div className='college_glimpses'>
                         <Card></Card>
                     </div>
+                    {
+                        userData?.role == 'TEACHER' ?
+                            <a className='block_text' onClick={blockModalClicked}>Do you want to block a student?</a> : ' '
+                    }
                     <div className='friends'>
                         Suggestions
                         <Card className='xxxx'>
@@ -351,8 +389,65 @@ export default function Feed2() {
                         <Button variant="primary" onClick={addSkillsList}>Add Skills</Button>
                     </Modal.Footer>
                 </Modal>
+                <Modal show={showBlockModal} onHide={() => setShowBlockModal(false)} centered>
+                    <Modal.Body className='skills_modal'>
+                        <Table striped bordered hover size="sm">
+                            <thead>
+                                <tr>
+                                    <th>Profile</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {
+                                    allStudents?.map(st => {
+                                        return <tr>
+                                            <td>
+                                                <img
+                                                    style={{border: '1px solid grey', borderRadius: '50%', width: '1rem', height: '1rem', marginRight: '1rem'}}
+                                                    src={
+                                                        st?.profilePicture
+                                                            ? showProfilePicture(st?.profilePicture)
+                                                            : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnEx5bhTjsFgrSZ2D0q6j5XKlGpXcR6An3YxL6X1GB&s"
+                                                    }
+                                                    alt=""
+                                                />
+                                                {st?.name}
+                                            </td>
+                                            <td style={{ cursor: 'pointer' }}>
+                                                <div onClick={() => blockAStudent(st)}>
+                                                  {st?.isBlocked ? 'Blocked' : 'Block'}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    })
+                                }
+                            </tbody>
+                            {
+                                showAlert ?
+                                    <SweetAlert
+                                        warning
+                                        // showCancel
+                                        confirmBtnText="Yes, block it!"
+                                        confirmBtnBsStyle="danger"
+                                        title="Are you sure?"
+                                        onConfirm={blockStudent}
+                                        // onCancel={}
+                                        focusCancelBtn
+                                    >
+                                        This student will not be able to login again.
+                                    </SweetAlert> : ' '
+                            }
+
+                        </Table>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={() => setShowBlockModal(false)}>Close</Button>
+                        <Button variant="primary" onClick={() => setShowBlockModal(false)}>Ok</Button>
+                    </Modal.Footer>
+                </Modal>
             </div>
-            <PostalModal props={[userData, showPhotoModal, showDocModal, showModal]} UserData={userData} showPhotoModal={showPhotoModal} showDocModal={showDocModal} showModal={showModal} uploadPhoto={uploadPhoto} uploadDoc={uploadDoc} clickHandler={clickHandler} recentlyPosted={recentlyPosted}/>
+            <PostalModal props={[userData, showPhotoModal, showDocModal, showModal]} UserData={userData} showPhotoModal={showPhotoModal} showDocModal={showDocModal} showModal={showModal} uploadPhoto={uploadPhoto} uploadDoc={uploadDoc} clickHandler={clickHandler} recentlyPosted={recentlyPosted} />
 
             {/* {
             showDocModal  == true?

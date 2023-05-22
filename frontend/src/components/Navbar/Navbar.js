@@ -28,16 +28,15 @@ export default function Navbar() {
     })
     })()
   }, [])
+
+  if(userData && userData?.profilePicture){
+    var blob = new Blob([Int8Array.from(userData?.profilePicture?.data?.data)], {type: userData?.profilePicture?.contentType });
+    var image = window.URL.createObjectURL(blob);
+    console.log("final image", image);
+  }
+
   return (
     <div className="navbar">
-      {/* <div className="navbar_left">
-        <img
-          className="srgi_logo"
-          alt=""
-          src="https://www.static-contents.youth4work.com/university/Documents/Colleges/CollegeImages/0ef8ef50-ae10-4791-a0d9-21b069c3aec5.png"
-        />
-        
-      </div> */}
       <div className="college_name">SR GROUP OF INSTITUTIONS</div>
       <div className="icons">
       <AiFillHome />
@@ -45,7 +44,15 @@ export default function Navbar() {
       </div>
       
       <div className="last">
-        <div className="avatar"></div>
+        <img
+        className="avatar"
+        src={
+          userData?.profilePicture
+            ? image
+            : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnEx5bhTjsFgrSZ2D0q6j5XKlGpXcR6An3YxL6X1GB&s"
+        }
+        alt=""
+      />
         <NavDropdown
               id="nav-dropdown-dark-example"
               title={userData?.name}
@@ -53,7 +60,6 @@ export default function Navbar() {
             >
               <NavDropdown.Item  style={{ zIndex:"999999" }} href="/profile">Profile</NavDropdown.Item>
               <NavDropdown.Item  style={{ zIndex:"999999" }} href="/feed">Feed</NavDropdown.Item>
-
               <NavDropdown.Item   style={{ zIndex:"999999" }} onClick={logout}>
                 Logout
               </NavDropdown.Item>

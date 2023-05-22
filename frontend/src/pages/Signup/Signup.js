@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import image1 from '../../image/image1.jpg'
 import axios from 'axios'
 import Navbar from '../../components/Navbar/Navbar'
+import swal from "sweetalert";
 
 
 export default function Signup() {
@@ -61,18 +62,14 @@ export default function Signup() {
       setError('Invalid password')
     }
     else if(err == 'user already exists'){
-      alert('User already exists')
+      swal(
+        "User already exists",
+        "Please try with different email",
+        "error"
+      );
     }
   }
-
-  // const [showPassword, setShowPassword] = React.useState(false);
-
-  // const handleClickShowPassword = () => setShowPassword((show) => !show);
-
-  // const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
-  //   event.preventDefault();
-  // };
-
+  
   return (
     <>
     <div className='row'>

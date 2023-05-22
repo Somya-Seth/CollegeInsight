@@ -77,6 +77,10 @@ const user = new Schema({
         type: Array,
         required: false,
         default: ''
+    },
+    isBlocked: {
+        type: Boolean,
+        default: false
     }
 })
 const User = mongoose.model('User', user);

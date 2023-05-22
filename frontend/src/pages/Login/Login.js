@@ -30,7 +30,7 @@ export default function Login() {
 
   const [errors, setError] = useState('');
   const [isLoginClicked, loginClicked] = useState(false);
-  const { dispatch } = useContext(AuthContext);
+  const { isFetching,isLoggedIn, dispatch, error } = useContext(AuthContext);
   
   // when login button is clicked
   const login = async() => {
@@ -40,7 +40,23 @@ export default function Login() {
         await loginCall(
           {email: users.email, password: users.password},
           dispatch
-        ).then(res => navigate('/feed'));
+        ).then(res => {
+          if(res == 'Sorry! You are blocked'){
+            handleErrors('Sorry! You are blocked')
+          }
+          else if(res == 'user does not exist!Please Signup'){
+            handleErrors('user does not exist!Please Signup')
+          }
+          else if(res == 'Invalid Password'){
+            handleErrors('Invalid Password')
+          }
+          else{
+            navigate('/feed')
+          }
+        })
+        .catch(err => {
+          console.log(err)
+        });
       }
       catch(err){
         console.log("error occured in loggin in", err)
@@ -62,6 +78,14 @@ const handleErrors = async(msg) => {
     }
     else if(msg == 'Email or Password Incorrect'){
       setError('Email or Password Incorrect')
+    }
+    else if(msg == 'Sorry! You are blocked'){
+      swal(
+        "Sorry! Your are blocked",
+        "You will not be able to login now.",
+        "error"
+      );
+      setError('Sorry! You are blocked')
     }
   }
 
