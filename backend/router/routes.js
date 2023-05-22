@@ -163,6 +163,9 @@ const login = async (req, res) => {
     try {
         console.log("req body", req.body)
         let user = await User.find({ email: req.body.email })
+        if(user.length > 0 && user[0].isBlocked == true){
+            return res.status(400).json({message: 'Sorry! You are blocked'});
+        }
         console.log("user", user)
         let userExist;
         let passwordMatch = false;
@@ -225,4 +228,23 @@ const getAllUsers = async(req, res) => {
     }
 }
 
-module.exports = { signup,addSkills, login, getUser, post, getpost, postlike, uploadimage, postsummary, getProfilePicture, getUserById, getAllUsers, getSummary }
+const getAllStudents = async(req, res) => {
+    try{
+        const allUsers = await User.find({email: {$nin: [req.query.email]}, role: {$nin: [req.query.role]}})
+        res.status(200).json(allUsers)
+    }catch(err) {
+        res.status(500).json(err)
+    }
+}
+
+const blockStudent = async(req, res) => {
+    try{
+        const data = await User.findByIdAndUpdate(req.query.userId, {isBlocked: true}, { new: true })
+        const ret = await data.save()
+        return res.status(200).json(ret)
+    }catch(err){
+        res.status(500).json(err)
+    }
+}
+
+module.exports = { signup,addSkills, login, getUser, post, getpost, postlike, uploadimage, postsummary, getProfilePicture, getUserById, getAllUsers, getSummary, getAllStudents, blockStudent }

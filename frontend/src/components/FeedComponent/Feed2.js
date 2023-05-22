@@ -14,6 +14,8 @@ import { AuthContext } from '../../Context/AuthContext';
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import { format } from "timeago.js";
+import Table from 'react-bootstrap/Table';
+import SweetAlert from 'react-bootstrap-sweetalert'
 
 const CommonBox = styled.div`
 	text-align: center;
@@ -94,6 +96,11 @@ export default function Feed2() {
     const [newSkills, setNewSkills] = useState('');
     const [posts, setData] = useState('');
     const [recentlyPosted, setRecentlyPosted] = useState('')
+    const [showBlockModal, setShowBlockModal] = useState(false)
+    const [allStudents, setAllStudents] = useState([])
+    const [showAlert, setShowAlert] = useState(false)
+    const [student, setStudent] = useState('');
+
     const handleChange = e => {
         const name = e.target.value
         setNewSkills(name)
@@ -115,8 +122,10 @@ export default function Feed2() {
     }
     const setAddSkills = e => {
         setSkills([...skills, newSkills]);
+
         setNewSkills('')
     };
+    console.log("skills", skills)
     const clickHandler = (event) => {
 
         switch (showModal) {
@@ -157,6 +166,12 @@ export default function Feed2() {
                 break;
         }
     }
+    if (userData && userData?.profilePicture) {
+        console.log("inside")
+        var blob = new Blob([Int8Array.from(userData?.profilePicture?.data?.data)], { type: userData?.profilePicture?.contentType });
+        var image = window.URL.createObjectURL(blob);
+        console.log("final image", image);
+    }
 
     useEffect(() => {
         async function getUser() {
@@ -183,6 +198,33 @@ export default function Feed2() {
     }, [userData]);
 
     console.log('recentlyPosted', recentlyPosted);
+    const PF = process.env.REACT_APP_PUBLIC_FOLDER;
+    const blockModalClicked = async () => {
+        setShowBlockModal(!showBlockModal)
+        await axios.get(`http://localhost:8000/allStudents/?email=${user.email}&role=${userData?.role}`).then(res => {
+            setAllStudents(res.data)
+        }).catch(err => {
+            console.log('error while fetching all students', err)
+        })
+    }
+
+    const blockStudent = async () => {
+        setShowAlert(!showAlert)
+        await axios.get(`http://localhost:8000/blockStudent/?userId=${student?._id}`).then(res => {
+        }).catch(err => {
+            console.log("error occured while blocking a student");
+        })
+    }
+
+    const showProfilePicture = (val) => {
+        var blob = new Blob([Int8Array.from(val?.data?.data)], {type: val?.contentType });
+        return window.URL.createObjectURL(blob);
+    }
+
+    const blockAStudent = (stud) => {
+       setShowAlert(!showAlert)
+       setStudent(stud)
+    }
 
     return (
         <>
@@ -194,7 +236,12 @@ export default function Feed2() {
                             <Card.Body>
                                 <div className='cover'></div>
                                 <div className='main_content'>
-                                    <div className='imggg'></div>
+                                    <div className='imggg'>
+                                        {
+                                            userData.profilePicture ? <img src={image} alt="no image"></img> : <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5OjcBCgoKDQwNGg8PGjclHyU3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3N//AABEIAH0AfQMBIgACEQEDEQH/xAAaAAEAAwEBAQAAAAAAAAAAAAAAAQIDBQQH/8QALBAAAgECBQMDAgcAAAAAAAAAAAECAxEEEiExURRBYSJTcUKxEzIzUpGSof/EABYBAQEBAAAAAAAAAAAAAAAAAAABAv/EABURAQEAAAAAAAAAAAAAAAAAAAAR/9oADAMBAAIRAxEAPwD7iAAAAAAAACHJLuRnQFgVzx5JTT2YEgAAAAAAAAAAAZznfRATKdttWUcm9yAVAAAAABZTaNIyTMRcK3BWEr/JYgAAAAQwK1JW0Mw9WCoAFZyywlLhNgebF4p05OnTtmW74PDKcpP1Sb+WQ2223uyCK0p1qlN3jJ/HJ0cPXVeF1o1ujlG+Ck44iK7S0YHUABUE7ao2i7q5iXpvW3JFaAAAVm7IsUqbIDMAFQIks0WuUSAOLKLhJxluiDp4rCqt6ou0/ueGWGrR3pt/GpGmR6MBDNXUu0dRTwdWT9Syrlnvo0o0oZYr5fIRoACoBOzTAA3AQIoUqbFys1eLAyABUDKriKVK6lLXhbnnxuJcG6dN2f1M8IV7Z4/9lP8AsynXVb6KH8HlBB6ljqq3jBmkMevrg15TPCAOvSrU6q9Er+O5ocVNxaadmu6OlhMR+NHLL88f98lHoAJiryQRsgARQAAYyVpWIW5rKOZeTJ6FHGm805N7tsqdZ4ejf9KI6aj7UQVyQdbpqPtxHTUfbiQrkg6vTUfbRPTUfbiCuSejAu2Jj5TR7umoe2iY0KUJZoQSfIK0NKa7lIxzPwbAAAAAAArKOb5LADBprcG1kUdPhgUBLjJdiLPhlQBNnwyVBvwBUtGDZZQS31LkVCVloSAAAAAAAAAAAAAAAAAAAAAAAAAB/9k="></img>
+                                        }
+
+                                    </div>
                                     <div className='fullname'>
                                         {userData?.name}
                                     </div>
@@ -236,8 +283,10 @@ export default function Feed2() {
                 <div className='feed_middle'>
                     <div className='feed_middle_top'>
                         <ShareBox>
-                            <div>
-                                <img src="/images/user.svg" alt="" />
+                            <div className='avatar'>
+                                {
+                                    userData.profilePicture ? <img src={image} alt="no image"></img> : <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5OjcBCgoKDQwNGg8PGjclHyU3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3N//AABEIAH0AfQMBIgACEQEDEQH/xAAaAAEAAwEBAQAAAAAAAAAAAAAAAQIDBQQH/8QALBAAAgECBQMDAgcAAAAAAAAAAAECAxEEEiExURRBYSJTcUKxEzIzUpGSof/EABYBAQEBAAAAAAAAAAAAAAAAAAABAv/EABURAQEAAAAAAAAAAAAAAAAAAAAR/9oADAMBAAIRAxEAPwD7iAAAAAAAACHJLuRnQFgVzx5JTT2YEgAAAAAAAAAAAZznfRATKdttWUcm9yAVAAAAABZTaNIyTMRcK3BWEr/JYgAAAAQwK1JW0Mw9WCoAFZyywlLhNgebF4p05OnTtmW74PDKcpP1Sb+WQ2223uyCK0p1qlN3jJ/HJ0cPXVeF1o1ujlG+Ck44iK7S0YHUABUE7ao2i7q5iXpvW3JFaAAAVm7IsUqbIDMAFQIks0WuUSAOLKLhJxluiDp4rCqt6ou0/ueGWGrR3pt/GpGmR6MBDNXUu0dRTwdWT9Syrlnvo0o0oZYr5fIRoACoBOzTAA3AQIoUqbFys1eLAyABUDKriKVK6lLXhbnnxuJcG6dN2f1M8IV7Z4/9lP8AsynXVb6KH8HlBB6ljqq3jBmkMevrg15TPCAOvSrU6q9Er+O5ocVNxaadmu6OlhMR+NHLL88f98lHoAJiryQRsgARQAAYyVpWIW5rKOZeTJ6FHGm805N7tsqdZ4ejf9KI6aj7UQVyQdbpqPtxHTUfbiQrkg6vTUfbRPTUfbiCuSejAu2Jj5TR7umoe2iY0KUJZoQSfIK0NKa7lIxzPwbAAAAAAArKOb5LADBprcG1kUdPhgUBLjJdiLPhlQBNnwyVBvwBUtGDZZQS31LkVCVloSAAAAAAAAAAAAAAAAAAAAAAAAAB/9k="></img>
+                                }
                                 <button onClick={clickHandler}>
                                     Start a post
                                 </button>
@@ -296,6 +345,10 @@ export default function Feed2() {
                     <div className='college_glimpses'>
                         <Card></Card>
                     </div>
+                    {
+                        userData?.role == 'TEACHER' ?
+                            <a className='block_text' onClick={blockModalClicked}>Do you want to block a student?</a> : ' '
+                    }
                     <div className='friends'>
                         Suggestions
                         <Card className='xxxx'>
@@ -351,8 +404,65 @@ export default function Feed2() {
                         <Button variant="primary" onClick={addSkillsList}>Add Skills</Button>
                     </Modal.Footer>
                 </Modal>
+                <Modal show={showBlockModal} onHide={() => setShowBlockModal(false)} centered>
+                    <Modal.Body className='skills_modal'>
+                        <Table striped bordered hover size="sm">
+                            <thead>
+                                <tr>
+                                    <th>Profile</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {
+                                    allStudents?.map(st => {
+                                        return <tr>
+                                            <td>
+                                                <img
+                                                    style={{border: '1px solid grey', borderRadius: '50%', width: '1rem', height: '1rem', marginRight: '1rem'}}
+                                                    src={
+                                                        st?.profilePicture
+                                                            ? showProfilePicture(st?.profilePicture)
+                                                            : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnEx5bhTjsFgrSZ2D0q6j5XKlGpXcR6An3YxL6X1GB&s"
+                                                    }
+                                                    alt=""
+                                                />
+                                                {st?.name}
+                                            </td>
+                                            <td style={{ cursor: 'pointer' }}>
+                                                <div onClick={() => blockAStudent(st)}>
+                                                  {st?.isBlocked ? 'Blocked' : 'Block'}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    })
+                                }
+                            </tbody>
+                            {
+                                showAlert ?
+                                    <SweetAlert
+                                        warning
+                                        // showCancel
+                                        confirmBtnText="Yes, block it!"
+                                        confirmBtnBsStyle="danger"
+                                        title="Are you sure?"
+                                        onConfirm={blockStudent}
+                                        // onCancel={}
+                                        focusCancelBtn
+                                    >
+                                        This student will not be able to login again.
+                                    </SweetAlert> : ' '
+                            }
+
+                        </Table>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={() => setShowBlockModal(false)}>Close</Button>
+                        <Button variant="primary" onClick={() => setShowBlockModal(false)}>Ok</Button>
+                    </Modal.Footer>
+                </Modal>
             </div>
-            <PostalModal props={[userData, showPhotoModal, showDocModal, showModal]} UserData={userData} showPhotoModal={showPhotoModal} showDocModal={showDocModal} showModal={showModal} uploadPhoto={uploadPhoto} uploadDoc={uploadDoc} clickHandler={clickHandler} recentlyPosted={recentlyPosted}/>
+            <PostalModal props={[userData, showPhotoModal, showDocModal, showModal]} UserData={userData} showPhotoModal={showPhotoModal} showDocModal={showDocModal} showModal={showModal} uploadPhoto={uploadPhoto} uploadDoc={uploadDoc} clickHandler={clickHandler} recentlyPosted={recentlyPosted} />
 
             {/* {
             showDocModal  == true?

@@ -63,7 +63,6 @@ export default function Example({getUser, userData, showModal, closeProfileModal
                         "Content-Type": "multipart/form-data"
                     }
                 })
-            // handleClose();
         }
         catch (err) {
             console.log("error occured while updating profile", err);

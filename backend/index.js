@@ -236,3 +236,21 @@ app.get('/allUsers', async function (req, res) {
         res.status(400).send({ message: 'error while getting all users' })
     }
 })
+
+app.get('/allStudents', async function(req, res){
+    try{
+        await router.getAllStudents(req, res)
+    }
+    catch(err){
+        res.status(400).send({message: 'error while fetching all students'})
+    }
+})
+
+app.get('/blockStudent', async function(req, res){
+    try{
+        await router.blockStudent(req, res)
+    }
+    catch(err){
+        res.status(400).send({message: 'error while blocking a student'})
+    }
+})
