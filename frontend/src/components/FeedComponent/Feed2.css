@@ -141,3 +141,9 @@
     text-decoration: underline;
     cursor: pointer;
 }
+.feed_middle_image {
+    border: 1px solid grey;
+    border-radius: 50%;
+    width: 3rem;
+    height: 3rem;
+}
