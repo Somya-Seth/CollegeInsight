@@ -139,7 +139,7 @@ export default function Example({getUser, userData, showModal, closeProfileModal
                         </Form.Group>
                         <Form.Group className="mb-3">
                             <Form.Label>Languages</Form.Label>
-                            <Form.Control onChange={handleChange} type="text" name="languages" value={profile.languages} placeholder="Enter phone number..." />
+                            <Form.Control onChange={handleChange} type="text" name="languages" value={profile.languages} placeholder="Enter languages..." />
                         </Form.Group>
                         <Form.Group className="mb-3">
                             <Form.Label>Preferred Gender Pronounce</Form.Label>

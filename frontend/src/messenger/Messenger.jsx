@@ -53,17 +53,12 @@ export default function Messenger() {
 
   useEffect(() => {
     arrivalMessage &&
-      currentChat?.members.includes(arrivalMessage.sender) &&
+      currentChat?.members?.includes(arrivalMessage.sender) &&
       setMessages((prev) => [...prev, arrivalMessage]);
   }, [arrivalMessage, currentChat]);
 
   useEffect(() => {
     socket.current.emit("addUser", userData._id);
-    // socket.current.on("getUsers", (users) => {
-    //   // setOnlineUsers(
-    //   //   user.followings.filter((f) => users.some((u) => u.userId === f))
-    //   // );
-    // });
   }, [userData]);
 
 
@@ -85,20 +80,6 @@ export default function Messenger() {
     console.log("useEffect called .....")
     const getMessages = async () => {
       try {
-        // if(currentChat && currentChat.members){
-        //     await axios.post('http://localhost:8000/conversations', {
-        //     params:{
-        //       senderId: userData?._id,
-        //       receiverId: currentChat?._id
-        //     }
-        //     }).then(response => {
-        //       console.log("kimwmsdkmkas", response.data)
-        //       // setCurrentChat()
-        //     //  setMessages(['No messages yet, Start a conversation...'])
-        //     }).catch(err => {
-        //      console.log("error occured while posting conversation", err);
-        //     })
-        // }
         const res = await axios.get("http://localhost:8000/messages/" + currentChat?._id);
           setMessages(res.data);
       } catch (err) {
@@ -167,7 +148,8 @@ export default function Messenger() {
     console.log("empty c", c);
     setCurrentChat(c)
     if(searchQuery!=''){
-      const res = await axios.get('http://localhost:8000/conversations/find', {
+      const res = await axios.get(`http://localhost:8000/conversations/find`, 
+      {
         firstUserId: userData?._id,
         secondUserId: c?._id
       })
@@ -189,8 +171,6 @@ export default function Messenger() {
     }
   }
 
-  console.log("conver", conversations);
-  console.log("current chat", currentChat)
 
   return (
     <>
@@ -238,15 +218,6 @@ export default function Messenger() {
             )}
           </div>
         </div>
-        {/* <div className="chatOnline">
-          <div className="chatOnlineWrapper">
-            <ChatOnline
-              onlineUsers={onlineUsers}
-              currentId={userData._id}
-              setCurrentChat={setCurrentChat}
-            />
-          </div>
-        </div> */}
       </div>
     </>
   );

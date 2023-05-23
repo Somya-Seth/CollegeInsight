@@ -222,6 +222,9 @@ export default function Feed2() {
     }
 
     const blockAStudent = (stud) => {
+       if(stud?._isBlocked){
+        return
+       }
        setShowAlert(!showAlert)
        setStudent(stud)
     }
