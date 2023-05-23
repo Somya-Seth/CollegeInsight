@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import img1 from "../../image/image1.jpg";
-import img3 from "../../image/image3.jpeg";
-import img4 from "../../image/image4.jpg";
-import img5 from "../../image/image5.png";
-import img6 from "../../image/image6.jpg";
+import img1 from "./image1.jpg";
+import img3 from "./image3.jpeg";
+import img4 from "./image4.jpg";
+import img5 from "./image5.png";
+import img6 from "./image6.jpg";
 
 export default function ControlledCarousel() {
     // <Carousel>
