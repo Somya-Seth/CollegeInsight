@@ -35,11 +35,11 @@
     height: 8em;
     margin: 1em 0em 0em 1em;
 }
-.forget_password {
+/* .forget_password {
     color: blue;
     margin-top: 0.5em;
     margin-bottom: 0.5em;
-}
+} */
 .login_button {
     margin-top: 1rem;
 }

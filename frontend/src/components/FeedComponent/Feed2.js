@@ -100,11 +100,14 @@ export default function Feed2() {
     const [allStudents, setAllStudents] = useState([])
     const [showAlert, setShowAlert] = useState(false)
     const [student, setStudent] = useState('');
+    const [suggestedPeople, setSuggestedPeople] = useState([])
 
     const handleChange = e => {
         const name = e.target.value
         setNewSkills(name)
     }
+
+
     const addSkillsList = async () => {
         try {
             const res = await axios.post(`http://localhost:8000/addSkills`, {
@@ -113,7 +116,7 @@ export default function Feed2() {
                     skills: skills,
                 }
             });
-            setShowSkills([...showSkills, ...res.data.skills])
+            setShowSkills([...res.data.skills])
             setShowSkillsModal(false)
             console.log(res)
         } catch (error) {
@@ -174,6 +177,16 @@ export default function Feed2() {
     }
 
     useEffect(() => {
+        async function getSuggestedPeople() {
+            try {
+                const sugggestedUsers = await axios.get(`http://localhost:8000/suggestedPeople?email=${user.email}`);
+                console.log("users", sugggestedUsers.data);
+                setSuggestedPeople(sugggestedUsers.data)
+            } catch (error) {
+                console.log("error in suggestions", error.message)
+            }
+
+        }
         async function getUser() {
             const email = user.email
             const getProfilePicture = await axios.get(`http://localhost:8000/profilePicture?id=${user._id}`)
@@ -184,6 +197,7 @@ export default function Feed2() {
             setShowSkills(getUserData.data[0].skills)
         }
         getUser()
+        getSuggestedPeople()
     }, [])
 
     useEffect(() => {
@@ -217,14 +231,17 @@ export default function Feed2() {
     }
 
     const showProfilePicture = (val) => {
-        var blob = new Blob([Int8Array.from(val?.data?.data)], {type: val?.contentType });
+        var blob = new Blob([Int8Array.from(val?.data?.data)], { type: val?.contentType });
         return window.URL.createObjectURL(blob);
     }
 
     const blockAStudent = (stud) => {
-       setShowAlert(!showAlert)
-       setStudent(stud)
+        setShowAlert(!showAlert)
+        setStudent(stud)
     }
+
+    console.log("suggested",suggestedPeople)
+    
 
     return (
         <>
@@ -352,25 +369,19 @@ export default function Feed2() {
                     <div className='friends'>
                         Suggestions
                         <Card className='xxxx'>
-                            <div className='suggestions'>
-                                <div className='people_images'>
-                                    <img></img>
-                                </div>
-                                <div>Person Name</div>
-                            </div>
-                            <div className='suggestions'>
-                                <div className='people_images'>
-                                    <img></img>
-                                </div>
-                                <div>Person Name</div>
-                            </div>
-                            <div className='suggestions'>
-                                <div className='people_images'>
-                                    <img></img>
-                                </div>
-                                <div>Person Name</div>
-                            </div>
+                        {suggestedPeople?.map((people) => {
+                            
+                                // <div className='suggestions'>
+                                //     <div className='people_images'>
+                                //         <img></img>
+                                //     </div>
+                                //     <div>{people.name}</div>
+                                // </div>
+                                <h1>people</h1>
+                        })}
                         </Card>
+
+
                     </div>
                 </div>
                 <Modal show={showSkillsModal} onHide={() => setShowSkillsModal(false)}>
@@ -419,7 +430,7 @@ export default function Feed2() {
                                         return <tr>
                                             <td>
                                                 <img
-                                                    style={{border: '1px solid grey', borderRadius: '50%', width: '1rem', height: '1rem', marginRight: '1rem'}}
+                                                    style={{ border: '1px solid grey', borderRadius: '50%', width: '1rem', height: '1rem', marginRight: '1rem' }}
                                                     src={
                                                         st?.profilePicture
                                                             ? showProfilePicture(st?.profilePicture)
@@ -431,7 +442,7 @@ export default function Feed2() {
                                             </td>
                                             <td style={{ cursor: 'pointer' }}>
                                                 <div onClick={() => blockAStudent(st)}>
-                                                  {st?.isBlocked ? 'Blocked' : 'Block'}
+                                                    {st?.isBlocked ? 'Blocked' : 'Block'}
                                                 </div>
                                             </td>
                                         </tr>
