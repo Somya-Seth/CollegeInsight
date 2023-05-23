@@ -16,6 +16,7 @@ import { useNavigate } from "react-router-dom";
 import { format } from "timeago.js";
 import Table from 'react-bootstrap/Table';
 import SweetAlert from 'react-bootstrap-sweetalert'
+import ControlledCarousel from '../Carousel/Carousel';
 
 const CommonBox = styled.div`
 	text-align: center;
@@ -360,7 +361,7 @@ export default function Feed2() {
                 </div>
                 <div className='feed_right'>
                     <div className='college_glimpses'>
-                        <Card></Card>
+                        <Card> <ControlledCarousel /> </Card>
                     </div>
                     {
                         userData?.role == 'TEACHER' ?
