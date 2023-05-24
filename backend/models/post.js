@@ -13,7 +13,9 @@ const post = new Schema({
 		type: String,
 	},
     img: {
-        type: String
+        data: Buffer,
+        contentType: String,
+        required: false,
     }
 })
 const Post = mongoose.model('Post', post);

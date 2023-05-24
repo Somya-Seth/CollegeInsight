@@ -5,7 +5,7 @@ import Card from 'react-bootstrap/Card';
 import { FiEdit3 } from "react-icons/fi";
 import Navbar from '../Navbar/Navbar';
 import Modal from 'react-bootstrap/Modal';
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, useRef } from "react";
 import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
 import styled from "styled-components";
@@ -17,6 +17,7 @@ import { format } from "timeago.js";
 import Table from 'react-bootstrap/Table';
 import SweetAlert from 'react-bootstrap-sweetalert'
 import ControlledCarousel from '../Carousel/Carousel';
+import swal from "sweetalert";
 
 const CommonBox = styled.div`
 	text-align: center;
@@ -156,6 +157,13 @@ export default function Feed2() {
         }
     }
     const uploadPhoto = (event) => {
+        if(event && event.data && (event.data.img || event.data.text)){
+            swal(
+                "Post Uploaded Successfully",
+                "",
+                "success"
+            );
+        }
         switch (showPhotoModal) {
             case false:
                 setShowPhotoModal(true);
@@ -194,6 +202,7 @@ export default function Feed2() {
             setUserData(getUserData.data[0]);
             console.log(getUserData, userData);
             setShowSkills(getUserData.data[0].skills)
+            setSkills(getUserData.data[0].skills)
         }
         getUser()
         getSuggestedPeople()
@@ -230,6 +239,11 @@ export default function Feed2() {
     }
 
     const showProfilePicture = (val) => {
+        var blob = new Blob([Int8Array.from(val?.data?.data)], { type: val?.contentType });
+        return window.URL.createObjectURL(blob);
+    }
+
+    const showImg = (val) => {
         var blob = new Blob([Int8Array.from(val?.data?.data)], { type: val?.contentType });
         return window.URL.createObjectURL(blob);
     }
@@ -326,7 +340,7 @@ export default function Feed2() {
                             </div>
                         </ShareBox>
                     </div>
-                    <div className='activity'>
+                    <div>
                         {
                             posts.length == 0 && 
                             (<>
@@ -342,13 +356,16 @@ export default function Feed2() {
                         {posts && 
 
                             (
-                                <>
+                                <div className='activity'>
                                     {
                                         posts.map((item, index) => (
                                             <Card key={index} className='activity_card'>
                                                 <div className='activity_details'>
                                                     <div className='activity_person_image'>
-                                                        <img></img>
+                                                        <img src={
+                                                            item?.userData[0]?.profilePicture ? showProfilePicture(item?.userData[0]?.profilePicture):
+                                                            "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5OjcBCgoKDQwNGg8PGjclHyU3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3N//AABEIAH0AfQMBIgACEQEDEQH/xAAaAAEAAwEBAQAAAAAAAAAAAAAAAQIDBQQH/8QALBAAAgECBQMDAgcAAAAAAAAAAAECAxEEEiExURRBYSJTcUKxEzIzUpGSof/EABYBAQEBAAAAAAAAAAAAAAAAAAABAv/EABURAQEAAAAAAAAAAAAAAAAAAAAR/9oADAMBAAIRAxEAPwD7iAAAAAAAACHJLuRnQFgVzx5JTT2YEgAAAAAAAAAAAZznfRATKdttWUcm9yAVAAAAABZTaNIyTMRcK3BWEr/JYgAAAAQwK1JW0Mw9WCoAFZyywlLhNgebF4p05OnTtmW74PDKcpP1Sb+WQ2223uyCK0p1qlN3jJ/HJ0cPXVeF1o1ujlG+Ck44iK7S0YHUABUE7ao2i7q5iXpvW3JFaAAAVm7IsUqbIDMAFQIks0WuUSAOLKLhJxluiDp4rCqt6ou0/ueGWGrR3pt/GpGmR6MBDNXUu0dRTwdWT9Syrlnvo0o0oZYr5fIRoACoBOzTAA3AQIoUqbFys1eLAyABUDKriKVK6lLXhbnnxuJcG6dN2f1M8IV7Z4/9lP8AsynXVb6KH8HlBB6ljqq3jBmkMevrg15TPCAOvSrU6q9Er+O5ocVNxaadmu6OlhMR+NHLL88f98lHoAJiryQRsgARQAAYyVpWIW5rKOZeTJ6FHGm805N7tsqdZ4ejf9KI6aj7UQVyQdbpqPtxHTUfbiQrkg6vTUfbRPTUfbiCuSejAu2Jj5TR7umoe2iY0KUJZoQSfIK0NKa7lIxzPwbAAAAAAArKOb5LADBprcG1kUdPhgUBLjJdiLPhlQBNnwyVBvwBUtGDZZQS31LkVCVloSAAAAAAAAAAAAAAAAAAAAAAAAAB/9k="
+                                                        }></img>
                                                     </div>
                                                     <p style={{ width: '70%', marginTop: '0.5rem' }}>{item?.userData[0]?.name}</p>
                                                     <div className='timeago__'>{format(item?.date)}</div>
@@ -356,17 +373,17 @@ export default function Feed2() {
                                                 <div className='text__'>
                                                     {item.text}
                                                 </div>
-                                                {item?.image && (
+                                                {item?.img && (
                                                     <>
-                                                        <div className='post_img'>
-                                                            <img ></img>
+                                                        <div className='post_img__'>
+                                                            <img className='post_img' src={showImg(item.img)}></img>
                                                         </div>
 
                                                     </>
                                                 )}
                                             </Card>
                                         ))}
-                                </>
+                                </div>
                             )
                             
                         }
@@ -384,8 +401,8 @@ export default function Feed2() {
                         userData?.role == 'TEACHER' ?
                             <a className='block_text' onClick={blockModalClicked}>Do you want to block a student?</a> : ' '
                     }
-                    <div className='friends'>
-                        Suggestions
+                    <div className='heading__text'>
+                        Suggestions:-
                         <Card className='xxxx'>
                             {suggestedPeople?.map((people) => {
 

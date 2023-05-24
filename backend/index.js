@@ -22,6 +22,7 @@ const messageRoute = require("./router/messages");
 const Router = require('express').Router();
 const fs = require('fs');
 const User = require('./models/user')
+const Post = require('./models/post')
 
 //middlewares
 const corsOptions = {
@@ -199,6 +200,50 @@ app.post('/postprofile', upload.single("profilePicture"), async function (req, r
     }
 })
 
+app.post('/image', upload.single("image"), async function (req, res) {
+    console.log("req.body in profile modal", req.body);
+    try {
+        const xyz = path.join(__dirname, "../" + '/uploads')
+        console.log("dirname", xyz);
+        if (req.body.image == 'null') {
+            const timestamp = Date.now()
+            const date = new Date(timestamp);
+            const data = new Post({
+                userId: req.body.userId,
+                text: req.body.text,
+                date: date,
+            })
+            await data.save()
+            return res.status(200).json(req.body)
+        }
+        else {
+            req.body.img = fs.readFileSync(path.join(__dirname, "../backend" + '/uploads' + "/" + req?.file?.filename))
+            const obj = {
+                img: {
+                    data: req.body.img,
+                    contentType: 'image/png'
+                }
+            }
+            req.body.image = obj.img
+            req.body.image.contentType = 'image/png'
+        }
+        const timestamp = Date.now()
+        const date = new Date(timestamp);
+        // const dateString = date.toLocaleDateString();
+        const data = new Post({
+            userId: req.body.userId,
+            text: req.body.text,
+            img: req.body.image,
+            date: date,
+        })
+        await data.save()
+        return res.status(200).json(req.body)
+    } catch (err) {
+        console.log("error while posting image", err.message);
+        res.status(502).json(err);
+    }
+})
+
 app.get('/profilePicture', async function (req, res) {
     try {
         await router.getProfilePicture(req, res);
@@ -237,51 +282,51 @@ app.get('/allUsers', async function (req, res) {
     }
 })
 
-app.get('/allStudents', async function(req, res){
-    try{
+app.get('/allStudents', async function (req, res) {
+    try {
         await router.getAllStudents(req, res)
     }
-    catch(err){
-        res.status(400).send({message: 'error while fetching all students'})
+    catch (err) {
+        res.status(400).send({ message: 'error while fetching all students' })
     }
 })
 
-app.get('/blockStudent', async function(req, res){
-    try{
+app.get('/blockStudent', async function (req, res) {
+    try {
         await router.blockStudent(req, res)
     }
-    catch(err){
-        res.status(400).send({message: 'error while blocking a student'})
+    catch (err) {
+        res.status(400).send({ message: 'error while blocking a student' })
     }
 })
 
-app.get("/resetpassword", async function(req,res){
-    try{
-        await router.reset_password(req,res)
+app.get("/resetpassword", async function (req, res) {
+    try {
+        await router.reset_password(req, res)
     }
-    catch(error){
-        console.log("error",error.message)
-        res.status(400).send({success:false,msg:error.message})
+    catch (error) {
+        console.log("error", error.message)
+        res.status(400).send({ success: false, msg: error.message })
     }
 })
 
-app.post("/forgetpassword", async function (req,res){
-    try{
-        console.log("inside api",req.body)
-       await router.forgotPassword(req,res)
-    }catch(err){
+app.post("/forgetpassword", async function (req, res) {
+    try {
+        console.log("inside api", req.body)
+        await router.forgotPassword(req, res)
+    } catch (err) {
         console.log("password-reset error", err.message)
-        res.status(400).send({success:false,msg:err.message})
+        res.status(400).send({ success: false, msg: err.message })
     }
 })
 
-app.get("/suggestedPeople", async function(req,res){
-    try{
+app.get("/suggestedPeople", async function (req, res) {
+    try {
         console.log("api hit")
-        await router.getSuggestedPeople(req,res);
+        await router.getSuggestedPeople(req, res);
 
-    }catch(err){
+    } catch (err) {
         console.log("suggestion error", err.message)
-    
+
     }
 })

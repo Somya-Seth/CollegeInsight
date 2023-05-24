@@ -24,7 +24,7 @@ export default function ControlledCarousel() {
           key={index}
           src={imageUrl}
           alt={`Image ${index}`}
-          style={{ display: index === currentIndex ? 'block' : 'none', width: '25rem', height:'15rem' }}
+          style={{ display: index === currentIndex ? 'block' : 'none', width: '22rem', height:'15rem' }}
         />
       ))}
     </div>

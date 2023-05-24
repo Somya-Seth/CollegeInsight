@@ -1,10 +1,11 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import ReactPlayer from "react-player";
 import styled from "styled-components";
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import { useLocation } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
 
 
 const Container = styled.div`
@@ -172,6 +173,7 @@ const UploadImage = styled.div`
 
 
 export default function PostModal(props) {
+	const [photoModal, setShowPhotoModal] = useState(props.showPhotoModal)
 	const [editorText, setEditorText] = useState("");
 	const [imageFile, setImageFile] = useState(null);
 	const [editorImageText, setEditorImageText] = useState("");
@@ -181,61 +183,90 @@ export default function PostModal(props) {
 	const location = useLocation();
 	const [DocFile, setDocFile] = useState("");
 	const [assetArea, setAssetArea] = useState("");
-	
+	const inputFile = useRef(null)
+	const [postImage, setPostImage] = useState(null);
+
 	let showModal = true;
+
 	
-	  const reset = (event) => {
-		  setEditorText("");
-		  setEditorImageText("");
-		  setEditorDocText("")
-		  setImageFile(null);
-		  setDocFile("");
-		  setAssetArea("");
-		  if (props.showPhotoModal==true) {
-			  
-			  props.uploadPhoto(event);
-			}
-			
-			else if (props.showDocModal==true) {
-				
-				props.uploadDoc(event);
-			}
-			else {
-				props.clickHandler(event);
-			}
-		};
-		const postArticle = async (event) => {
-		  await axios.post("http://localhost:8000/post",{
-			  text: editorText,
-			  userId: props.UserData._id,
-		  })
-		  reset()
+	const reset = (event) => {
+		setEditorText("");
+		setEditorImageText("");
+		setEditorDocText("")
+		setImageFile(null);
+		setDocFile("");
+		setAssetArea("");
+		if (props.showPhotoModal == true) {
+
+			props.uploadPhoto(event);
 		}
-		const handleImageUpload = async () => {
-			var txt = ["shashank"]
-			txt.push(imageFile)
-		
-			try {
-			  const response = await axios.post("http://localhost:8000/add",{
-				headers: {
-					"Content-Type": "multipart/form-data"
-				  },
-				data: txt
-			  });
-		
-			  setImageUrl(response.data.imageUrl);
-			} catch (error) {
-			  console.log(error);
-			}
-		  };
-	function handleImage(event) {
-		let image = event.target.files[0];
-		if (image === "" || image === undefined) {
-			alert(`Not an image. This file is: ${typeof imageFile}`);
-			return;
+
+		else if (props.showDocModal == true) {
+
+			props.uploadDoc(event);
 		}
-		setImageFile(image);
+		else {
+			props.clickHandler(event);
+		}
+	};
+	const postArticle = async (event) => {
+		await axios.post("http://localhost:8000/post", {
+			text: editorText,
+			userId: props.UserData._id,
+		})
+		reset()
 	}
+	
+	if (props.UserData && props.UserData?.profilePicture) {
+		console.log("inside")
+		var blob = new Blob([Int8Array.from(props.UserData?.profilePicture?.data?.data)], { type: props.UserData?.profilePicture?.contentType });
+		var image = window.URL.createObjectURL(blob);
+		console.log("final image", image);
+	}
+
+	const onButtonClick = () => {
+		// `current` points to the mounted file input element
+		inputFile.current.click();
+	};
+
+	const handleFileUpload = e => {
+		const { files } = e.target;
+		if (files && files.length) {
+		  const filename = files[0].name;
+	
+		  var parts = filename.split(".");
+		  const fileType = parts[parts.length - 1];
+		  console.log("fileType", fileType); //ex: zip, rar, jpg, svg etc.
+	
+		  setPostImage(files[0]);
+		}
+	};
+
+	const submit = async(val) => {
+		try{
+			if(val == 'image'){
+				
+				const formData = new FormData();
+				formData.append('userId', props.UserData._id)
+				formData.append('text', editorImageText)
+				formData.append('image', postImage)
+	
+				const res = await axios.post("http://localhost:8000/image", formData,
+				    {
+						Headers: {
+							"Content-Type": "multipart/form-data"
+						}
+				})
+				props.uploadPhoto(res)
+			}
+		}
+		catch(err){
+			console.log("error occured in postal modal", err);
+		}
+	}
+
+	console.log("profile modal postimage", postImage)
+	console.log("profile modal image text", editorImageText)
 
 	return (
 		<>
@@ -250,26 +281,28 @@ export default function PostModal(props) {
 						</Header>
 						<SharedContent>
 							<UserInfo>
-								<img src="/images/user.svg" alt="" />
+								{
+									props.UserData?.profilePicture ? <img src={image} alt="no image" className='feed_middle_image'></img> : <img className='feed_middle_image' src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5OjcBCgoKDQwNGg8PGjclHyU3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3N//AABEIAH0AfQMBIgACEQEDEQH/xAAaAAEAAwEBAQAAAAAAAAAAAAAAAQIDBQQH/8QALBAAAgECBQMDAgcAAAAAAAAAAAECAxEEEiExURRBYSJTcUKxEzIzUpGSof/EABYBAQEBAAAAAAAAAAAAAAAAAAABAv/EABURAQEAAAAAAAAAAAAAAAAAAAAR/9oADAMBAAIRAxEAPwD7iAAAAAAAACHJLuRnQFgVzx5JTT2YEgAAAAAAAAAAAZznfRATKdttWUcm9yAVAAAAABZTaNIyTMRcK3BWEr/JYgAAAAQwK1JW0Mw9WCoAFZyywlLhNgebF4p05OnTtmW74PDKcpP1Sb+WQ2223uyCK0p1qlN3jJ/HJ0cPXVeF1o1ujlG+Ck44iK7S0YHUABUE7ao2i7q5iXpvW3JFaAAAVm7IsUqbIDMAFQIks0WuUSAOLKLhJxluiDp4rCqt6ou0/ueGWGrR3pt/GpGmR6MBDNXUu0dRTwdWT9Syrlnvo0o0oZYr5fIRoACoBOzTAA3AQIoUqbFys1eLAyABUDKriKVK6lLXhbnnxuJcG6dN2f1M8IV7Z4/9lP8AsynXVb6KH8HlBB6ljqq3jBmkMevrg15TPCAOvSrU6q9Er+O5ocVNxaadmu6OlhMR+NHLL88f98lHoAJiryQRsgARQAAYyVpWIW5rKOZeTJ6FHGm805N7tsqdZ4ejf9KI6aj7UQVyQdbpqPtxHTUfbiQrkg6vTUfbRPTUfbiCuSejAu2Jj5TR7umoe2iY0KUJZoQSfIK0NKa7lIxzPwbAAAAAAArKOb5LADBprcG1kUdPhgUBLjJdiLPhlQBNnwyVBvwBUtGDZZQS31LkVCVloSAAAAAAAAAAAAAAAAAAAAAAAAAB/9k="></img>
+								}
 								<span>{props.UserData.name}</span>
 							</UserInfo>
 							<Editor>
 
-								<textarea value={editorText} onChange={(event) => setEditorText(event.target.value)} placeholder="What do you want to talk about?" autoFocus={true} style={{borderRadius:'1rem', border: '1px solid lightgrey', marginBottom: '1rem', padding: '2rem'}}/>
+								<textarea value={editorText} onChange={(event) => setEditorText(event.target.value)} placeholder="What do you want to talk about?" autoFocus={true} style={{ borderRadius: '1rem', border: '1px solid lightgrey', marginBottom: '1rem', padding: '2rem' }} />
 
 							</Editor>
 						</SharedContent>
 						<ShareCreation>
 
-						<Button onClick={postArticle} style={{width: '6rem', height: '2rem', marginBottom: '2rem', marginLeft: '12rem'}}>
-							Post
-						</Button>
+							<Button onClick={postArticle} style={{ width: '6rem', height: '2rem', marginBottom: '2rem', marginLeft: '12rem' }}>
+								Post
+							</Button>
 						</ShareCreation>
 
 					</Content>
 				</Container>
 			)}
-			{props.showPhotoModal === true && (
+			{props.showPhotoModal === true ? (
 				<Container>
 					<Content>
 						<Header>
@@ -280,28 +313,37 @@ export default function PostModal(props) {
 						</Header>
 						<SharedContent>
 							<UserInfo>
-								<img src="/images/user.svg" alt="" />
+								{
+									props.UserData?.profilePicture ? <img src={image} alt="no image" className='feed_middle_image'></img> : <img className='feed_middle_image' src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5OjcBCgoKDQwNGg8PGjclHyU3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3N//AABEIAH0AfQMBIgACEQEDEQH/xAAaAAEAAwEBAQAAAAAAAAAAAAAAAQIDBQQH/8QALBAAAgECBQMDAgcAAAAAAAAAAAECAxEEEiExURRBYSJTcUKxEzIzUpGSof/EABYBAQEBAAAAAAAAAAAAAAAAAAABAv/EABURAQEAAAAAAAAAAAAAAAAAAAAR/9oADAMBAAIRAxEAPwD7iAAAAAAAACHJLuRnQFgVzx5JTT2YEgAAAAAAAAAAAZznfRATKdttWUcm9yAVAAAAABZTaNIyTMRcK3BWEr/JYgAAAAQwK1JW0Mw9WCoAFZyywlLhNgebF4p05OnTtmW74PDKcpP1Sb+WQ2223uyCK0p1qlN3jJ/HJ0cPXVeF1o1ujlG+Ck44iK7S0YHUABUE7ao2i7q5iXpvW3JFaAAAVm7IsUqbIDMAFQIks0WuUSAOLKLhJxluiDp4rCqt6ou0/ueGWGrR3pt/GpGmR6MBDNXUu0dRTwdWT9Syrlnvo0o0oZYr5fIRoACoBOzTAA3AQIoUqbFys1eLAyABUDKriKVK6lLXhbnnxuJcG6dN2f1M8IV7Z4/9lP8AsynXVb6KH8HlBB6ljqq3jBmkMevrg15TPCAOvSrU6q9Er+O5ocVNxaadmu6OlhMR+NHLL88f98lHoAJiryQRsgARQAAYyVpWIW5rKOZeTJ6FHGm805N7tsqdZ4ejf9KI6aj7UQVyQdbpqPtxHTUfbiQrkg6vTUfbRPTUfbiCuSejAu2Jj5TR7umoe2iY0KUJZoQSfIK0NKa7lIxzPwbAAAAAAArKOb5LADBprcG1kUdPhgUBLjJdiLPhlQBNnwyVBvwBUtGDZZQS31LkVCVloSAAAAAAAAAAAAAAAAAAAAAAAAAB/9k="></img>
+								}
 								<span>{props.UserData.name}</span>
 							</UserInfo>
 							<Editor>
 
-								<UploadImage>
-									<input type="file" accept="image/gif, image/jpeg, image/png" name="image" id="imageFile" onChange={handleImage} style={{ display: "none" }} />
-									
-									<button onClick={handleImageUpload} style={{border: 'none', marginBottom: '1rem', color: '#0073b1', backgroundColor: '#fff', width: 'auto', height: '2rem'}}>Select an image to share</button>
-									{imageFile && <img src={URL.createObjectURL(imageFile)} alt="" />}
-								</UploadImage>
-								<textarea value={editorImageText} onChange={(event) => setEditorImageText(event.target.value)} placeholder="Write a caption for your Photo" autoFocus={true} style={{borderRadius:'1rem', border: '1px solid lightgrey', marginBottom: '1rem', padding: '2rem'}}/>
+								<Form encType="multipart/form-data">
+									<UploadImage>
+										<input
+											style={{ display: "none" }}
+											// accept=".zip,.rar"
+											ref={inputFile}
+											onChange={handleFileUpload}
+											type="file"
+										/>
+										<Button onClick={onButtonClick} style={{ border: 'none', marginBottom: '1rem', color: '#0073b1', backgroundColor: '#fff', width: 'auto', height: '2rem' }}>Select an image to share</Button>
+										{/* {inputFile ? <div>{inputFile}</div> : ''} */}
+									</UploadImage>
+									<textarea value={editorImageText} onChange={(event) => setEditorImageText(event.target.value)} placeholder="Write a caption for your image" autoFocus={true} style={{ borderRadius: '1rem', border: '1px solid lightgrey', marginBottom: '1rem', padding: '2rem' }} />
+								</Form>
 							</Editor>
 						</SharedContent>
 
-						<Button style={{width: '6rem', height: '2rem', marginBottom: '2rem', marginLeft: '15rem'}}>
+						<Button style={{ width: '6rem', height: '2rem', marginBottom: '2rem', marginLeft: '15rem' }} onClick={() => submit('image')}>
 							Post
 						</Button>
 
 					</Content>
 				</Container>
-			)}
+			): ''}
 			{props.showDocModal === true && (
 				<Container>
 					<Content>
@@ -313,7 +355,9 @@ export default function PostModal(props) {
 						</Header>
 						<SharedContent>
 							<UserInfo>
-								<img src="/images/user.svg" alt="" />
+								{
+									props.UserData?.profilePicture ? <img src={image} alt="no image" className='feed_middle_image'></img> : <img className='feed_middle_image' src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5OjcBCgoKDQwNGg8PGjclHyU3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3N//AABEIAH0AfQMBIgACEQEDEQH/xAAaAAEAAwEBAQAAAAAAAAAAAAAAAQIDBQQH/8QALBAAAgECBQMDAgcAAAAAAAAAAAECAxEEEiExURRBYSJTcUKxEzIzUpGSof/EABYBAQEBAAAAAAAAAAAAAAAAAAABAv/EABURAQEAAAAAAAAAAAAAAAAAAAAR/9oADAMBAAIRAxEAPwD7iAAAAAAAACHJLuRnQFgVzx5JTT2YEgAAAAAAAAAAAZznfRATKdttWUcm9yAVAAAAABZTaNIyTMRcK3BWEr/JYgAAAAQwK1JW0Mw9WCoAFZyywlLhNgebF4p05OnTtmW74PDKcpP1Sb+WQ2223uyCK0p1qlN3jJ/HJ0cPXVeF1o1ujlG+Ck44iK7S0YHUABUE7ao2i7q5iXpvW3JFaAAAVm7IsUqbIDMAFQIks0WuUSAOLKLhJxluiDp4rCqt6ou0/ueGWGrR3pt/GpGmR6MBDNXUu0dRTwdWT9Syrlnvo0o0oZYr5fIRoACoBOzTAA3AQIoUqbFys1eLAyABUDKriKVK6lLXhbnnxuJcG6dN2f1M8IV7Z4/9lP8AsynXVb6KH8HlBB6ljqq3jBmkMevrg15TPCAOvSrU6q9Er+O5ocVNxaadmu6OlhMR+NHLL88f98lHoAJiryQRsgARQAAYyVpWIW5rKOZeTJ6FHGm805N7tsqdZ4ejf9KI6aj7UQVyQdbpqPtxHTUfbiQrkg6vTUfbRPTUfbiCuSejAu2Jj5TR7umoe2iY0KUJZoQSfIK0NKa7lIxzPwbAAAAAAArKOb5LADBprcG1kUdPhgUBLjJdiLPhlQBNnwyVBvwBUtGDZZQS31LkVCVloSAAAAAAAAAAAAAAAAAAAAAAAAAB/9k="></img>
+								}
 								<span>{props.UserData.name}</span>
 							</UserInfo>
 							<Editor>
@@ -325,16 +369,16 @@ export default function PostModal(props) {
 									placeholder="Upload the Document"
 									onChange={(event) => setDocFile(event.target.value)}
 								/>
-								<textarea value={editorDocText} onChange={(event) => setEditorDocText(event.target.value)} placeholder="Write something about your document" autoFocus={true} />
+								<textarea value={editorDocText} onChange={(event) => setEditorDocText(event.target.value)} placeholder="Write something about your document" autoFocus={true} style={{ borderRadius: '1rem', border: '1px solid lightgrey', marginBottom: '1rem', padding: '2rem' }} />
 							</Editor>
 						</SharedContent>
 						<ShareCreation>
 
-						<PostButton>
-							Post
-						</PostButton>
+							<Button style={{ marginBottom: '2rem', marginLeft: '14rem' }}>
+								Post
+							</Button>
 						</ShareCreation>
-					
+
 					</Content>
 				</Container>
 			)}
