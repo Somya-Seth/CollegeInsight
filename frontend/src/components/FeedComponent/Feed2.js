@@ -103,6 +103,7 @@ export default function Feed2() {
     const [showAlert, setShowAlert] = useState(false)
     const [student, setStudent] = useState('');
     const [suggestedPeople, setSuggestedPeople] = useState([])
+    const [summary, setSummary] = useState("")
 
     const handleChange = e => {
         const name = e.target.value
@@ -184,6 +185,15 @@ export default function Feed2() {
     }
 
     useEffect(() => {
+        async function getSummary(){
+            try{
+               const summary =  await axios.get(`http://localhost:8000/getSummary?email=${user.email}`);
+               console.log("res summary",summary.data)
+               setSummary(summary.data)
+            }catch(error){
+                console.log("error in getSumamry", error.message)
+            }
+        }
         async function getSuggestedPeople() {
             try {
                 const sugggestedUsers = await axios.get(`http://localhost:8000/suggestedPeople?email=${user.email}`);
@@ -205,6 +215,7 @@ export default function Feed2() {
             setSkills(getUserData.data[0].skills)
         }
         getUser()
+        getSummary()
         getSuggestedPeople()
     }, [])
 
@@ -279,7 +290,7 @@ export default function Feed2() {
                                         {userData?.name}
                                     </div>
                                     <div className='about_yourself'>
-                                        Hello, I am a UI/UX designer. Hello, I am a UI/UX designer. My hobbies are ...
+                                        {summary}
                                     </div>
                                     <Button onClick={() => { navigate('/profile') }}>Edit Profile</Button>
                                 </div>

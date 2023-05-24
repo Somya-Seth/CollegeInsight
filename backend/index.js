@@ -330,3 +330,13 @@ app.get("/suggestedPeople", async function (req, res) {
 
     }
 })
+app.get("/summary", async function (req, res) {
+    try {
+        console.log("api hit")
+        await router.getSummary(req, res);
+
+    } catch (err) {
+        console.log("summary error", err.message)
+
+    }
+})
