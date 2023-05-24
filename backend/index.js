@@ -340,3 +340,13 @@ app.get("/getSelfPosts", async function(req, res){
         res.status(400).send({ success: false, msg: err.message })
     }
 })
+app.get("/summary", async function (req, res) {
+    try {
+        console.log("api hit")
+        await router.getSummary(req, res);
+
+    } catch (err) {
+        console.log("summary error", err.message)
+
+    }
+})

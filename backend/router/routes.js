@@ -124,9 +124,14 @@ const postsummary = async(req,res,next) => {
 
 const getSummary = async(req,res,next) => {
     try{
-        const data = await User.findById(req.body.userId);
-        const ret = await data.save()
-        return res.status(200).json(ret)
+        const data = await User.find({email:req.query.email});
+        console.log("data",data)
+        const resSummary = data[0].summary;
+
+        const response = resSummary.substring(0,101)+".......";
+        console.log("output",response)
+
+        return res.status(200).json(response)
     }catch(err){
         console.log(err)
         return res.status(400).json(err)
