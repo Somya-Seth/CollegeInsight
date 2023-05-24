@@ -23,6 +23,7 @@ const Router = require('express').Router();
 const fs = require('fs');
 const User = require('./models/user')
 const Post = require('./models/post')
+const Conversation = require("./models/Conversation")
 
 //middlewares
 const corsOptions = {
@@ -262,8 +263,7 @@ app.get('/postImage', async function (req, res) {
     }
 })
 
-app.use("/conversations", conversationRoute);
-app.use("/messages", messageRoute);
+
 
 app.get('/user', async function (req, res) {
     try {
@@ -331,11 +331,11 @@ app.get("/suggestedPeople", async function (req, res) {
     }
 })
 
-app.get("/getSelfPosts", async function(req, res){
-    try{
+app.get("/getSelfPosts", async function (req, res) {
+    try {
         await router.getSelfPosts(req, res)
     }
-    catch(err) {
+    catch (err) {
         console.log("error occured in fetching self posts", err)
         res.status(400).send({ success: false, msg: err.message })
     }
@@ -350,3 +350,19 @@ app.get("/summary", async function (req, res) {
 
     }
 })
+
+app.get("/conversations/find", async (req, res) => {
+    console.log("req.body in conversation route", req.query);
+    try {
+        const conversation = await Conversation.findOne({
+            members: { $all: [req.query.firstUserId, req.query.secondUserId] },
+        });
+        console.log("conversationsssss", conversation);
+        res.status(200).json(conversation)
+    } catch (err) {
+        res.status(500).json(err);
+    }
+});
+
+app.use("/conversations", conversationRoute);
+app.use("/messages", messageRoute);

@@ -36,18 +36,18 @@ export default function Messenger() {
     });
   }, []);
 
-  useEffect(()=>{
-    (async() => {
+  useEffect(() => {
+    (async () => {
       await axios.get('http://localhost:8000/users', { params: user }).then(res => {
         setUserData(res.data[0])
-    }).catch(err => {
-      console.log("error occured in messenger", err);
-    })
-    await axios.get('http://localhost:8000/allUsers', {params: user}).then(res => {
-      setAllUsers(res.data)
-    }).catch(err => {
-      console.log('error occured while getting all users in frontend', err)
-    })
+      }).catch(err => {
+        console.log("error occured in messenger", err);
+      })
+      await axios.get('http://localhost:8000/allUsers', { params: user }).then(res => {
+        setAllUsers(res.data)
+      }).catch(err => {
+        console.log('error occured while getting all users in frontend', err)
+      })
     })()
   }, [])
 
@@ -81,7 +81,7 @@ export default function Messenger() {
     const getMessages = async () => {
       try {
         const res = await axios.get("http://localhost:8000/messages/" + currentChat?._id);
-          setMessages(res.data);
+        setMessages(res.data);
       } catch (err) {
         console.log(err);
       }
@@ -113,8 +113,8 @@ export default function Messenger() {
       //   setMessages([res.data])
       // }
       // else{
-        setMessages([...messages, res.data]);
-    // }
+      setMessages([...messages, res.data]);
+      // }
       setNewMessage("");
     } catch (err) {
       console.log(err);
@@ -127,64 +127,66 @@ export default function Messenger() {
 
   const searchUsers = (e) => {
     setSearchQuery(e.target.value)
-    if(e.target.value == ''){
+    if (e.target.value == '') {
       setConversations(usersList)
       return
     }
-    const arr =  allUsers.filter((item) => {
+    const arr = allUsers.filter((item) => {
       return searchParam.some((newItem) => {
-          return (
-              item[newItem]
-                  .toString()
-                  .toLowerCase()
-                  .indexOf(e.target.value.toLowerCase()) > -1
-          );
+        return (
+          item[newItem]
+            .toString()
+            .toLowerCase()
+            .indexOf(e.target.value.toLowerCase()) > -1
+        );
       });
     });
     setConversations([...arr])
   }
 
-  const setConversationAndCurrentChat = async(c) => {
+  const setConversationAndCurrentChat = async (c) => {
     console.log("empty c", c);
     setCurrentChat(c)
-    if(searchQuery!=''){
-      const res = await axios.get(`http://localhost:8000/conversations/find`, 
-      {
-        firstUserId: userData?._id,
-        secondUserId: c?._id
-      })
-      if(res.data.length>0){
-        return
-      }
-      await axios.post('http://localhost:8000/conversations', {
-            
-              senderId: userData?._id,
-              receiverId: c?._id
-            
-            }).then(response => {
-              console.log("kimwmsdkmkas", response.data)
-              setCurrentChat(response.data)
+    if (searchQuery != '') {
+      await axios.get(`http://localhost:8000/conversations/find?firstUserId=${userData?._id}&secondUserId=${c?._id}`,
+       ).then(async (res) => {
+          console.log("resssssss", res.data != null)
+          if (res.data != null) {
+            console.log("inside if")
+            return
+          }
+          await axios.post('http://localhost:8000/conversations', {
+
+            senderId: userData?._id,
+            receiverId: c?._id
+
+          }).then(response => {
+            console.log("kimwmsdkmkas", response.data)
+            setCurrentChat(response.data)
             //  setMessages(['No messages yet, Start a conversation...'])
-            }).catch(err => {
-             console.log("error occured while posting conversation", err);
-            })
+          }).catch(err => {
+            console.log("error occured while posting conversation", err);
+          })
+        }).catch((err) => {
+          console.log("err", err.message)
+        })
     }
   }
 
 
   return (
     <>
-     <Navbar />
+      <Navbar />
       <div className="messenger">
         <div className="chatMenu">
           <div className="chatMenuWrapper">
-            <input placeholder="Search for friends" className="chatMenuInput" onChange={searchUsers} value={searchQuery}/>
+            <input placeholder="Search for friends" className="chatMenuInput" onChange={searchUsers} value={searchQuery} />
             {
-            conversations.map((c) => (
-              <div onClick={() => setConversationAndCurrentChat(c)}>
-                <Conversation conversation={c} currentUser={userData} />
-              </div>
-            ))
+              conversations.map((c) => (
+                <div onClick={() => setConversationAndCurrentChat(c)}>
+                  <Conversation conversation={c} currentUser={userData} />
+                </div>
+              ))
             }
           </div>
         </div>

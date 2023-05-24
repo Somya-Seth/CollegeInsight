@@ -18,7 +18,7 @@ import Table from 'react-bootstrap/Table';
 import SweetAlert from 'react-bootstrap-sweetalert'
 import ControlledCarousel from '../Carousel/Carousel';
 import swal from "sweetalert";
-import { Document, Page } from 'react-pdf';
+
 
 const CommonBox = styled.div`
 	text-align: center;

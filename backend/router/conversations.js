@@ -32,17 +32,17 @@ router.get("/:userId", async (req, res) => {
 
 // get conv includes two userId
 
-router.get("/find", async (req, res) => {
-  console.log("req.body in conversation route", req.body);
-  try {
-    const conversation = await Conversation.findOne({
-      members: { $all: [req.body.firstUserId, req.body.secondUserId] },
-    });
-    console.log("conversationsssss", conversation);
-    res.status(200).json(conversation)
-  } catch (err) {
-    res.status(500).json(err);
-  }
-});
+// router.get("/find", async (req, res) => {
+//   console.log("req.body in conversation route", req.body);
+//   try {
+//     const conversation = await Conversation.findOne({
+//       members: { $all: [req.body.firstUserId, req.body.secondUserId] },
+//     });
+//     console.log("conversationsssss", conversation);
+//     res.status(200).json(conversation)
+//   } catch (err) {
+//     res.status(500).json(err);
+//   }
+// });
 
 module.exports = router;
