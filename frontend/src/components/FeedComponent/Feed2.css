@@ -99,6 +99,11 @@
     font-size: 1.1rem;
     margin-bottom: 0.8rem;
 }
+.activity_card_nopost {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 .timeago__ {
     display: flex;
     margin-left: 0%;
@@ -115,8 +120,18 @@
     font-size: 1rem;
     margin-bottom: 1rem;
 }
+.no_post_text {
+    font-size: 2rem;
+    color: #8b8888;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center
+}
 .college_glimpses {
-    min-height: 15rem;
+    height: 15rem;
+    width: 25rem;
+    margin-bottom: 5rem;
 }
 .suggestions {
     display: flex;
@@ -129,6 +144,7 @@
     width: 2rem;
     height: 2rem;
     margin-right: 1rem;
+    object-fit: 'contain';
 }
 .xxxx {
     padding: 0.5rem;
@@ -146,4 +162,8 @@
     border-radius: 50%;
     width: 3rem;
     height: 3rem;
+}
+.heading__text {
+    margin-bottom: 0.5rem;
+    font-size: 1.5rem;
 }

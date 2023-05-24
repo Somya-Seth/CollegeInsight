@@ -254,3 +254,34 @@ app.get('/blockStudent', async function(req, res){
         res.status(400).send({message: 'error while blocking a student'})
     }
 })
+
+app.get("/resetpassword", async function(req,res){
+    try{
+        await router.reset_password(req,res)
+    }
+    catch(error){
+        console.log("error",error.message)
+        res.status(400).send({success:false,msg:error.message})
+    }
+})
+
+app.post("/forgetpassword", async function (req,res){
+    try{
+        console.log("inside api",req.body)
+       await router.forgotPassword(req,res)
+    }catch(err){
+        console.log("password-reset error", err.message)
+        res.status(400).send({success:false,msg:err.message})
+    }
+})
+
+app.get("/suggestedPeople", async function(req,res){
+    try{
+        console.log("api hit")
+        await router.getSuggestedPeople(req,res);
+
+    }catch(err){
+        console.log("suggestion error", err.message)
+    
+    }
+})

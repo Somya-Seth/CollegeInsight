@@ -9,6 +9,8 @@ import Feed from "./components/FeedComponent/Feed2";
 import Messenger from "./messenger/Messenger";
 // import 'bootstrap/dist/css/bootstrap.min.css';
 import { AuthContext } from "./Context/AuthContext";
+import ForgotPassword from "./pages/forgetPassword/forgotPassword";
+import ResetPassword from "./pages/resetPassword/resetPassword";
 
 function App() {
   // const { user } = useContext(AuthContext);
@@ -22,6 +24,8 @@ function App() {
         <Route exact path="/profile" element={<Profile />}></Route>
         <Route exact path="/feed" element={<Feed />}></Route>
         <Route exact path="/messenger" element={<Messenger />}></Route>
+        <Route exact path = "/forgotPassword" element={<ForgotPassword/>}></Route>
+        <Route exact path = "/resetpassword/:token" element={<ResetPassword/>}></Route>
       </Routes>
     </BrowserRouter>
   );

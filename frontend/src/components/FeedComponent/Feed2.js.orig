@@ -126,8 +126,10 @@ export default function Feed2() {
     }
     const setAddSkills = e => {
         setSkills([...skills, newSkills]);
+
         setNewSkills('')
     };
+    console.log("skills", skills)
     const clickHandler = (event) => {
 
         switch (showModal) {
@@ -235,15 +237,20 @@ export default function Feed2() {
     }
 
     const blockAStudent = (stud) => {
-        if (stud?._isBlocked) {
-            return
-        }
+<<<<<<< HEAD
+       if(stud?._isBlocked){
+        return
+       }
+       setShowAlert(!showAlert)
+       setStudent(stud)
+=======
         setShowAlert(!showAlert)
         setStudent(stud)
+>>>>>>> e084f5b43468cf098c68b4f2bdc962c313a62942
     }
 
-    console.log("suggested", suggestedPeople)
-
+    console.log("suggested",suggestedPeople)
+    
 
     return (
         <>
@@ -327,19 +334,7 @@ export default function Feed2() {
                         </ShareBox>
                     </div>
                     <div className='activity'>
-                        {
-                            posts.length == 0 && 
-                            (<>
-                                {
-                                    <Card className='activity_card_nopost' style={{height: '28rem'}}>
-                                    <div className='no_post_text'>
-                                        No Posts Yet. Start a post above..
-                                    </div>
-                                   </Card>
-                                }
-                            </>)
-                        }
-                        {posts && 
+                        {posts &&
 
                             (
                                 <>
@@ -368,17 +363,13 @@ export default function Feed2() {
                                         ))}
                                 </>
                             )
-                            
                         }
 
                     </div>
                 </div>
                 <div className='feed_right'>
                     <div className='college_glimpses'>
-                        <div className='heading__text'>Some College Glimpses:-</div>
-                        <Card className='college_glimpses'>
-                            <ControlledCarousel />
-                        </Card>
+                        <Card> <ControlledCarousel /> </Card>
                     </div>
                     {
                         userData?.role == 'TEACHER' ?
@@ -387,23 +378,16 @@ export default function Feed2() {
                     <div className='friends'>
                         Suggestions
                         <Card className='xxxx'>
-                            {suggestedPeople?.map((people) => {
-
-                                return <div className='suggestions'>
-                                    <div >
-                                        <img
-                                            className='people_images'
-                                            src={
-                                                people?.profilePicture
-                                                    ? showProfilePicture(people?.profilePicture)
-                                                    : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnEx5bhTjsFgrSZ2D0q6j5XKlGpXcR6An3YxL6X1GB&s"
-                                            }
-                                            alt=""
-                                        />
-                                    </div>
-                                    <div>{people.name}</div>
-                                </div>
-                            })}
+                        {suggestedPeople?.map((people) => {
+                            
+                                // <div className='suggestions'>
+                                //     <div className='people_images'>
+                                //         <img></img>
+                                //     </div>
+                                //     <div>{people.name}</div>
+                                // </div>
+                                <h1>people</h1>
+                        })}
                         </Card>
 
 

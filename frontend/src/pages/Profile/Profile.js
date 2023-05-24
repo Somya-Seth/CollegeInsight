@@ -35,6 +35,7 @@ export default function Profile(props) {
   const [showModal, setShowModal] = useState(false);
   const [showModal2, setShowModal2] = useState(false);
   const [UserData, setUserData] = useState("");
+  const [suggestedPeople, setSuggestedPeople] = useState([])
 
   for (const [i, person] of people.entries()) {
     list.push(
@@ -62,16 +63,31 @@ export default function Profile(props) {
         console.log("Error occurred in profile.js:", err);
       }
     }
-    async function getPost(){
-			const getPostData = await axios.get('http://localhost:8000/getpost',{
+    async function getPost() {
+      const getPostData = await axios.get('http://localhost:8000/getpost', {
       })
-			console.log("hello", getPostData.data)
-			setpostData(getPostData.data)
-		}
+      console.log("hello", getPostData.data)
+      setpostData(getPostData.data)
+    }
     getPost()
     getUser()
+    
   }, [user.email]);
-  
+  useEffect(()=> {
+    (
+      async function getSuggestedPeople() {
+        try {
+            const sugggestedUsers = await axios.get(`http://localhost:8000/suggestedPeople?email=${user.email}`);
+            console.log("users", sugggestedUsers.data);
+            setSuggestedPeople(sugggestedUsers.data)
+        } catch (error) {
+            console.log("error in suggestions", error.message)
+        }
+
+    }
+    )()
+  }, [])
+
   async function getUser() {
     const email = user.email;
     try {
@@ -82,13 +98,13 @@ export default function Profile(props) {
       console.log("Error occurred in profile.js:", err);
     }
   }
-  
+
   console.log("image", UserData);
   console.log("imag1", UserData?.profilePicture?.contentType);
   console.log("imag2", UserData?.profilePicture?.data?.data);
 
-  if(UserData && UserData?.profilePicture){
-    var blob = new Blob([Int8Array.from(UserData?.profilePicture?.data?.data)], {type: UserData?.profilePicture?.contentType });
+  if (UserData && UserData?.profilePicture) {
+    var blob = new Blob([Int8Array.from(UserData?.profilePicture?.data?.data)], { type: UserData?.profilePicture?.contentType });
     var image = window.URL.createObjectURL(blob);
     console.log("final image", image);
   }
@@ -98,10 +114,15 @@ export default function Profile(props) {
     setShowModal2(false)
   }
 
-  const closeProfileModal = async(val, file) => {
+  const showProfilePicture = (val) => {
+    var blob = new Blob([Int8Array.from(val?.data?.data)], { type: val?.contentType });
+    return window.URL.createObjectURL(blob);
+   }
+
+  const closeProfileModal = async (val, file) => {
     console.log("value", val)
     console.log("file", file)
-    if(file == null){
+    if (file == null) {
       UserData.profilePicture = val.profilePicture
       UserData.name = val.name
       UserData.course = val.course
@@ -113,7 +134,7 @@ export default function Profile(props) {
       UserData.languages = val.languages
       UserData.phone = val.phone
     }
-    else{
+    else {
       await getUser()
     }
     window.location.reload(true)
@@ -128,9 +149,9 @@ export default function Profile(props) {
           <Card className="left_top">
             <div className="upper_background"></div>
             <div className="profile_image">
-              {UserData?.profilePicture ? 
-              <img className = 'profile_picture' src={image} alt=""></img> :
-              <img className = 'profile_picture' src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5OjcBCgoKDQwNGg8PGjclHyU3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3N//AABEIAH0AfQMBIgACEQEDEQH/xAAaAAEAAwEBAQAAAAAAAAAAAAAAAQIDBQQH/8QALBAAAgECBQMDAgcAAAAAAAAAAAECAxEEEiExURRBYSJTcUKxEzIzUpGSof/EABYBAQEBAAAAAAAAAAAAAAAAAAABAv/EABURAQEAAAAAAAAAAAAAAAAAAAAR/9oADAMBAAIRAxEAPwD7iAAAAAAAACHJLuRnQFgVzx5JTT2YEgAAAAAAAAAAAZznfRATKdttWUcm9yAVAAAAABZTaNIyTMRcK3BWEr/JYgAAAAQwK1JW0Mw9WCoAFZyywlLhNgebF4p05OnTtmW74PDKcpP1Sb+WQ2223uyCK0p1qlN3jJ/HJ0cPXVeF1o1ujlG+Ck44iK7S0YHUABUE7ao2i7q5iXpvW3JFaAAAVm7IsUqbIDMAFQIks0WuUSAOLKLhJxluiDp4rCqt6ou0/ueGWGrR3pt/GpGmR6MBDNXUu0dRTwdWT9Syrlnvo0o0oZYr5fIRoACoBOzTAA3AQIoUqbFys1eLAyABUDKriKVK6lLXhbnnxuJcG6dN2f1M8IV7Z4/9lP8AsynXVb6KH8HlBB6ljqq3jBmkMevrg15TPCAOvSrU6q9Er+O5ocVNxaadmu6OlhMR+NHLL88f98lHoAJiryQRsgARQAAYyVpWIW5rKOZeTJ6FHGm805N7tsqdZ4ejf9KI6aj7UQVyQdbpqPtxHTUfbiQrkg6vTUfbRPTUfbiCuSejAu2Jj5TR7umoe2iY0KUJZoQSfIK0NKa7lIxzPwbAAAAAAArKOb5LADBprcG1kUdPhgUBLjJdiLPhlQBNnwyVBvwBUtGDZZQS31LkVCVloSAAAAAAAAAAAAAAAAAAAAAAAAAB/9k=" alt=""></img>
+              {UserData?.profilePicture ?
+                <img className='profile_picture' src={image} alt=""></img> :
+                <img className='profile_picture' src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5OjcBCgoKDQwNGg8PGjclHyU3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3N//AABEIAH0AfQMBIgACEQEDEQH/xAAaAAEAAwEBAQAAAAAAAAAAAAAAAQIDBQQH/8QALBAAAgECBQMDAgcAAAAAAAAAAAECAxEEEiExURRBYSJTcUKxEzIzUpGSof/EABYBAQEBAAAAAAAAAAAAAAAAAAABAv/EABURAQEAAAAAAAAAAAAAAAAAAAAR/9oADAMBAAIRAxEAPwD7iAAAAAAAACHJLuRnQFgVzx5JTT2YEgAAAAAAAAAAAZznfRATKdttWUcm9yAVAAAAABZTaNIyTMRcK3BWEr/JYgAAAAQwK1JW0Mw9WCoAFZyywlLhNgebF4p05OnTtmW74PDKcpP1Sb+WQ2223uyCK0p1qlN3jJ/HJ0cPXVeF1o1ujlG+Ck44iK7S0YHUABUE7ao2i7q5iXpvW3JFaAAAVm7IsUqbIDMAFQIks0WuUSAOLKLhJxluiDp4rCqt6ou0/ueGWGrR3pt/GpGmR6MBDNXUu0dRTwdWT9Syrlnvo0o0oZYr5fIRoACoBOzTAA3AQIoUqbFys1eLAyABUDKriKVK6lLXhbnnxuJcG6dN2f1M8IV7Z4/9lP8AsynXVb6KH8HlBB6ljqq3jBmkMevrg15TPCAOvSrU6q9Er+O5ocVNxaadmu6OlhMR+NHLL88f98lHoAJiryQRsgARQAAYyVpWIW5rKOZeTJ6FHGm805N7tsqdZ4ejf9KI6aj7UQVyQdbpqPtxHTUfbiQrkg6vTUfbRPTUfbiCuSejAu2Jj5TR7umoe2iY0KUJZoQSfIK0NKa7lIxzPwbAAAAAAArKOb5LADBprcG1kUdPhgUBLjJdiLPhlQBNnwyVBvwBUtGDZZQS31LkVCVloSAAAAAAAAAAAAAAAAAAAAAAAAAB/9k=" alt=""></img>
               }
             </div>
             <div className="lower_background">
@@ -144,7 +165,7 @@ export default function Profile(props) {
                   >
                     Edit Profile
                   </Button>
-                  {showModal ? <ProfileModal getUser={getUser} userData={UserData} showModal={true} closeProfileModal={closeProfileModal}/> : null}
+                  {showModal ? <ProfileModal getUser={getUser} userData={UserData} showModal={true} closeProfileModal={closeProfileModal} /> : null}
                 </div>
                 <div className="course">{UserData.course}</div>
                 <div className="year">{UserData.year}</div>
@@ -161,7 +182,7 @@ export default function Profile(props) {
                 className="edit_icon_summary"
                 onClick={() => setShowModal2(!showModal2)}
               >
-                <FiEdit3  />
+                <FiEdit3 />
               </div>
             </div>
             {showModal2 ? <SummaryModal UserData={UserData} showModal2={showModal2} closeSummaryModal={closeSummaryModal}></SummaryModal> : null}
@@ -172,14 +193,31 @@ export default function Profile(props) {
           <Card className="left_bottom">
             <Card.Title className="activity_heading">Activity</Card.Title>
             <Card.Body>
-              <PostCard UserData= {UserData} postData={postData} />
+              <PostCard UserData={UserData} postData={postData} />
             </Card.Body>
           </Card>
         </div>
         <div className="right">
           <Card className="right_top">
             <div className="heading_right">Suggested People</div>
-            <div>{list}</div>
+            {suggestedPeople?.map((people) => {
+
+              return <div className='suggested_people_name'>
+                <div >
+                  <img
+                    className='suggested_people_profile_icon'
+                    style={{ border: '1px solid grey', borderRadius: '50%', marginRight: '1rem' }}
+                    src={
+                      people?.profilePicture
+                        ? showProfilePicture(people?.profilePicture)
+                        : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnEx5bhTjsFgrSZ2D0q6j5XKlGpXcR6An3YxL6X1GB&s"
+                    }
+                    alt=""
+                  />
+                </div>
+                <div>{people.name}</div>
+              </div>
+            })}
           </Card>
           <Card className="right_bottom">
             <div className="additional_details">

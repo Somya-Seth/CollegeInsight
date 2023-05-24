@@ -4,6 +4,7 @@ import styled from "styled-components";
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import { useLocation } from 'react-router-dom';
+import Button from 'react-bootstrap/Button';
 
 
 const Container = styled.div`
@@ -254,15 +255,15 @@ export default function PostModal(props) {
 							</UserInfo>
 							<Editor>
 
-								<textarea value={editorText} onChange={(event) => setEditorText(event.target.value)} placeholder="What do you want to talk about?" autoFocus={true} />
+								<textarea value={editorText} onChange={(event) => setEditorText(event.target.value)} placeholder="What do you want to talk about?" autoFocus={true} style={{borderRadius:'1rem', border: '1px solid lightgrey', marginBottom: '1rem', padding: '2rem'}}/>
 
 							</Editor>
 						</SharedContent>
 						<ShareCreation>
 
-						<PostButton onClick={postArticle}>
+						<Button onClick={postArticle} style={{width: '6rem', height: '2rem', marginBottom: '2rem', marginLeft: '12rem'}}>
 							Post
-						</PostButton>
+						</Button>
 						</ShareCreation>
 
 					</Content>
@@ -286,19 +287,17 @@ export default function PostModal(props) {
 
 								<UploadImage>
 									<input type="file" accept="image/gif, image/jpeg, image/png" name="image" id="imageFile" onChange={handleImage} style={{ display: "none" }} />
-									<p>
-										<label htmlFor="imageFile">Select an image to share</label>
-									</p>
-									<button onClick={handleImageUpload}>Upload</button>
+									
+									<button onClick={handleImageUpload} style={{border: 'none', marginBottom: '1rem', color: '#0073b1', backgroundColor: '#fff', width: 'auto', height: '2rem'}}>Select an image to share</button>
 									{imageFile && <img src={URL.createObjectURL(imageFile)} alt="" />}
 								</UploadImage>
-								<textarea value={editorImageText} onChange={(event) => setEditorImageText(event.target.value)} placeholder="Write a caption for your Photo" autoFocus={true} />
+								<textarea value={editorImageText} onChange={(event) => setEditorImageText(event.target.value)} placeholder="Write a caption for your Photo" autoFocus={true} style={{borderRadius:'1rem', border: '1px solid lightgrey', marginBottom: '1rem', padding: '2rem'}}/>
 							</Editor>
 						</SharedContent>
 
-						<PostButton>
+						<Button style={{width: '6rem', height: '2rem', marginBottom: '2rem', marginLeft: '15rem'}}>
 							Post
-						</PostButton>
+						</Button>
 
 					</Content>
 				</Container>

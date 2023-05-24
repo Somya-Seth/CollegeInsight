@@ -12,6 +12,8 @@ const mongoose = require('mongoose');
 const router = express.Router();
 const path = require('path');
 const fs = require('fs');
+const nodemailer = require("nodemailer");
+let randomstring = require("randomstring");
 
 const uploadimage = async (req, res, next) => {
     try {
@@ -247,4 +249,107 @@ const blockStudent = async(req, res) => {
     }
 }
 
-module.exports = { signup,addSkills, login, getUser, post, getpost, postlike, uploadimage, postsummary, getProfilePicture, getUserById, getAllUsers, getSummary, getAllStudents, blockStudent }
+const forgotPassword = async (req, res) => {
+    try {
+        const email = req.body.email;
+        const userData = await User.find({ email: email })
+        console.log("inside forgotPassword", userData)
+        if (userData) {
+            console.log("inside userdata")
+            randomstring = await randomstring.generate();
+            console.log("randomString", randomstring)
+            const name = userData[0].name;
+            console.log("name", name)
+            const uu = await User.updateOne({ email: email }, { $set: { token: randomstring, pwd: '' } }, { new: true })
+            console.log("User", uu)
+            await resetPasswordMail(email, name, randomstring);
+            console.log("done");
+            res.status(200).send({ msg: "done" })
+
+        } else {
+            res.status(200).send({ success: true, msg: "This User Email does not exist" })
+        }
+
+
+    } catch (err) {
+        res.status(400).send({ success: false, msg: err.message })
+    }
+}
+
+const reset_password = async (req, res) => {
+    try {
+        const token = req.query.token;
+        const password = req.query.password;
+        console.log("password", password)
+        console.log("token", token);
+
+
+        const tokenData = await User.findOne({ token: token })
+        // console.log("token data",tokenData)
+        if (tokenData) {
+
+            console.log("inside token Data", tokenData)
+            const newPassword = await hashPassword(req.query.password);
+            console.log("newPassword", newPassword)
+            const email = { email: "sahu.ashi0911@gmail.com" }
+            const update = { password: newPassword, token: "" }
+            const UserData = await User.findOneAndUpdate(email, update)
+            // const UserData = User.updateOne({email:"sahu.ashi0911@gmail.com"}, { $set:  })
+            console.log("UserData", UserData)
+            res.status(200).send({ success: true, msg: "User Password has been reset" })
+        } else {
+            res.status(200).send({ success: false, msg: "This link has been expired" })
+        }
+
+
+    } catch (error) {
+        console.log("error", error.message);
+        res.status(400).send({ success: false, msg: error.message })
+    }
+}
+
+const resetPasswordMail = async (email, name, token) => {
+    try {
+
+        console.log("token", token, email, name)
+        // window.localStorage.setItem('token', JSON.stringify(token));
+        // console.log("token",localStorage.getItem(token))
+        const transporter = nodemailer.createTransport({
+            service: "gmail",
+            port: 587,
+            auth: {
+                user: "CollegeInsight2023@gmail.com",
+                pass: "biyfwxeccgiyqhyw"
+            }
+        })
+        const myFun = () => {
+            console.log("dicvyanshi")
+        }
+        let info = await transporter.sendMail({
+            from: "CollegeInsight2023@gmail.com", // sender address
+            to: email, // list of receivers
+            subject: "Reset Password", // Subject line
+            // html: '<p> Hi ' + name + ', Please copy the link and <a href = "http://localhost:3000/login">Reset Password'
+            // html: '<p> Hi ' + name + ', Please copy the link and <a onClick="myFun()">Reset Password</a>'
+            text: `Hi I am Please click on the link http://localhost:3000/resetpassword/${token}\n\n`
+        });
+        console.log("Message sent: %s", info.messageId);
+
+    } catch (err) {
+        console.log("err", err.message)
+    }
+}
+
+const getSuggestedPeople = async (req,res)=>{
+    try{
+        const sugggestedUsers = await User.find({email:{$ne:req.query.email}}).limit(5)
+        console.log("users",sugggestedUsers.length);
+        return res.status(200).json(sugggestedUsers);
+    }catch(error){
+        console.log("err", error.message);
+        return res.status(400).send({success:false,msg:err.message})
+    }
+}
+
+
+module.exports = { signup,addSkills, login, getUser, post, getpost, postlike, uploadimage, postsummary, getProfilePicture, getUserById, getAllUsers, getSummary, getAllStudents, blockStudent ,forgotPassword, reset_password, resetPasswordMail,getSuggestedPeople}
