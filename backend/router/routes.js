@@ -85,12 +85,7 @@ const getUser = async (req, res, next) => {
 }
 const getpost = async (req, res, next) => {
     try {
-        // const data = await Post.find()
-        // for (var i = 0; i < data.length; i++) {
-        //     const userData = await User.find({ _id: data[i]._doc.userId })
-        //     data[i]._doc['userData'] = userData
-        // }
-        // return res.status(200).json(data)
+        
         console.log("req.query", req.query);
         const response = await Post.find({
             userId: { $ne: req.query._id },
@@ -351,5 +346,20 @@ const getSuggestedPeople = async (req,res)=>{
     }
 }
 
+const getSelfPosts = async(req, res) => {
+    try {
+        console.log("req.query", req.query);
+        const id = await User.find({email: req.query.email})
+        console.log("iddddd", id[0]._id)
+        const response = await Post.find({
+            userId: id[0]._id,
+        }).sort({date: -1})
+        console.log("res.data in posts", response);
+        return res.status(200).json(response)
+    } catch (err) {
+        return res.status(400).json(err.message)
+    }
+}
 
-module.exports = { signup,addSkills, login, getUser, post, getpost, postlike, uploadimage, postsummary, getProfilePicture, getUserById, getAllUsers, getSummary, getAllStudents, blockStudent ,forgotPassword, reset_password, resetPasswordMail,getSuggestedPeople}
+
+module.exports = { signup,addSkills, login, getUser, post, getpost, postlike, uploadimage, postsummary, getProfilePicture, getUserById, getAllUsers, getSummary, getAllStudents, blockStudent ,forgotPassword, reset_password, resetPasswordMail,getSuggestedPeople, getSelfPosts}

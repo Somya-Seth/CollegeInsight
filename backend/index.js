@@ -217,10 +217,10 @@ app.post('/image', upload.single("image"), async function (req, res) {
             return res.status(200).json(req.body)
         }
         else {
-            req.body.img = fs.readFileSync(path.join(__dirname, "../backend" + '/uploads' + "/" + req?.file?.filename))
+            req.body.image = fs.readFileSync(path.join(__dirname, "../backend" + '/uploads' + "/" + req?.file?.filename))
             const obj = {
                 img: {
-                    data: req.body.img,
+                    data: req.body.image,
                     contentType: 'image/png'
                 }
             }
@@ -229,7 +229,6 @@ app.post('/image', upload.single("image"), async function (req, res) {
         }
         const timestamp = Date.now()
         const date = new Date(timestamp);
-        // const dateString = date.toLocaleDateString();
         const data = new Post({
             userId: req.body.userId,
             text: req.body.text,
@@ -243,6 +242,7 @@ app.post('/image', upload.single("image"), async function (req, res) {
         res.status(502).json(err);
     }
 })
+
 
 app.get('/profilePicture', async function (req, res) {
     try {
@@ -327,6 +327,16 @@ app.get("/suggestedPeople", async function (req, res) {
 
     } catch (err) {
         console.log("suggestion error", err.message)
+        res.status(400).send({ success: false, msg: err.message })
+    }
+})
 
+app.get("/getSelfPosts", async function(req, res){
+    try{
+        await router.getSelfPosts(req, res)
+    }
+    catch(err) {
+        console.log("error occured in fetching self posts", err)
+        res.status(400).send({ success: false, msg: err.message })
     }
 })

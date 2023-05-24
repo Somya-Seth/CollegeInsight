@@ -16,7 +16,7 @@ const post = new Schema({
         data: Buffer,
         contentType: String,
         required: false,
-    }
+    },
 })
 const Post = mongoose.model('Post', post);
 
