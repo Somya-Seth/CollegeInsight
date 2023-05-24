@@ -47,7 +47,7 @@ export default function Profile(props) {
   }
 
   const [profilePicture, setImage] = useState('');
-  const [postData, setpostData] = useState("");
+  const [postData, setpostData] = useState([]);
   const inputFile = useRef(null);
   const { user } = useContext(AuthContext);
   var base64String = ''
@@ -63,16 +63,9 @@ export default function Profile(props) {
         console.log("Error occurred in profile.js:", err);
       }
     }
-    async function getPost() {
-      const getPostData = await axios.get('http://localhost:8000/getpost', {
-      })
-      console.log("hello", getPostData.data)
-      setpostData(getPostData.data)
-    }
-    getPost()
     getUser()
-    
   }, [user.email]);
+
   useEffect(()=> {
     (
       async function getSuggestedPeople() {
@@ -86,6 +79,13 @@ export default function Profile(props) {
 
     }
     )()
+
+    async function getPost() {
+      const getPostData = await axios.get(`http://localhost:8000/getSelfPosts/?email=${user.email}`)
+      console.log("getPost data ", getPostData)
+      setpostData(getPostData.data)
+    }
+    getPost()
   }, [])
 
   async function getUser() {

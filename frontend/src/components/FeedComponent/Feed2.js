@@ -18,6 +18,7 @@ import Table from 'react-bootstrap/Table';
 import SweetAlert from 'react-bootstrap-sweetalert'
 import ControlledCarousel from '../Carousel/Carousel';
 import swal from "sweetalert";
+import { Document, Page } from 'react-pdf';
 
 const CommonBox = styled.div`
 	text-align: center;
@@ -157,7 +158,7 @@ export default function Feed2() {
         }
     }
     const uploadPhoto = (event) => {
-        if(event && event.data && (event.data.img || event.data.text)){
+        if (event && event.data && (event.data.img || event.data.text)) {
             swal(
                 "Post Uploaded Successfully",
                 "",
@@ -329,10 +330,10 @@ export default function Feed2() {
                                     <img src="/images/photo-icon.svg" alt="" />
                                     <span onClick={uploadPhoto}>Photo</span>
                                 </button>
-                                <button onClick={uploadDoc}>
+                                {/* <button onClick={uploadDoc}>
                                     <img src="/images/video-icon.svg" alt="" />
                                     <span onClick={uploadDoc}>Document</span>
-                                </button>
+                                </button> */}
                                 <button onClick={clickHandler}>
                                     <img src="/images/article-icon.svg" alt="" />
                                     <span onClick={clickHandler}>Write article</span>
@@ -342,18 +343,18 @@ export default function Feed2() {
                     </div>
                     <div>
                         {
-                            posts.length == 0 && 
+                            posts.length == 0 &&
                             (<>
                                 {
-                                    <Card className='activity_card_nopost' style={{height: '28rem'}}>
-                                    <div className='no_post_text'>
-                                        No Posts Yet. Start a post above..
-                                    </div>
-                                   </Card>
+                                    <Card className='activity_card_nopost' style={{ height: '28rem' }}>
+                                        <div className='no_post_text'>
+                                            No Posts Yet. Start a post above..
+                                        </div>
+                                    </Card>
                                 }
                             </>)
                         }
-                        {posts && 
+                        {posts.length > 0 &&
 
                             (
                                 <div className='activity'>
@@ -361,11 +362,12 @@ export default function Feed2() {
                                         posts.map((item, index) => (
                                             <Card key={index} className='activity_card'>
                                                 <div className='activity_details'>
-                                                    <div className='activity_person_image'>
+                                                    <div>
                                                         <img src={
-                                                            item?.userData[0]?.profilePicture ? showProfilePicture(item?.userData[0]?.profilePicture):
-                                                            "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5OjcBCgoKDQwNGg8PGjclHyU3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3N//AABEIAH0AfQMBIgACEQEDEQH/xAAaAAEAAwEBAQAAAAAAAAAAAAAAAQIDBQQH/8QALBAAAgECBQMDAgcAAAAAAAAAAAECAxEEEiExURRBYSJTcUKxEzIzUpGSof/EABYBAQEBAAAAAAAAAAAAAAAAAAABAv/EABURAQEAAAAAAAAAAAAAAAAAAAAR/9oADAMBAAIRAxEAPwD7iAAAAAAAACHJLuRnQFgVzx5JTT2YEgAAAAAAAAAAAZznfRATKdttWUcm9yAVAAAAABZTaNIyTMRcK3BWEr/JYgAAAAQwK1JW0Mw9WCoAFZyywlLhNgebF4p05OnTtmW74PDKcpP1Sb+WQ2223uyCK0p1qlN3jJ/HJ0cPXVeF1o1ujlG+Ck44iK7S0YHUABUE7ao2i7q5iXpvW3JFaAAAVm7IsUqbIDMAFQIks0WuUSAOLKLhJxluiDp4rCqt6ou0/ueGWGrR3pt/GpGmR6MBDNXUu0dRTwdWT9Syrlnvo0o0oZYr5fIRoACoBOzTAA3AQIoUqbFys1eLAyABUDKriKVK6lLXhbnnxuJcG6dN2f1M8IV7Z4/9lP8AsynXVb6KH8HlBB6ljqq3jBmkMevrg15TPCAOvSrU6q9Er+O5ocVNxaadmu6OlhMR+NHLL88f98lHoAJiryQRsgARQAAYyVpWIW5rKOZeTJ6FHGm805N7tsqdZ4ejf9KI6aj7UQVyQdbpqPtxHTUfbiQrkg6vTUfbRPTUfbiCuSejAu2Jj5TR7umoe2iY0KUJZoQSfIK0NKa7lIxzPwbAAAAAAArKOb5LADBprcG1kUdPhgUBLjJdiLPhlQBNnwyVBvwBUtGDZZQS31LkVCVloSAAAAAAAAAAAAAAAAAAAAAAAAAB/9k="
-                                                        }></img>
+                                                            item?.userData[0]?.profilePicture ? showProfilePicture(item?.userData[0]?.profilePicture) :
+                                                                "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5OjcBCgoKDQwNGg8PGjclHyU3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3N//AABEIAH0AfQMBIgACEQEDEQH/xAAaAAEAAwEBAQAAAAAAAAAAAAAAAQIDBQQH/8QALBAAAgECBQMDAgcAAAAAAAAAAAECAxEEEiExURRBYSJTcUKxEzIzUpGSof/EABYBAQEBAAAAAAAAAAAAAAAAAAABAv/EABURAQEAAAAAAAAAAAAAAAAAAAAR/9oADAMBAAIRAxEAPwD7iAAAAAAAACHJLuRnQFgVzx5JTT2YEgAAAAAAAAAAAZznfRATKdttWUcm9yAVAAAAABZTaNIyTMRcK3BWEr/JYgAAAAQwK1JW0Mw9WCoAFZyywlLhNgebF4p05OnTtmW74PDKcpP1Sb+WQ2223uyCK0p1qlN3jJ/HJ0cPXVeF1o1ujlG+Ck44iK7S0YHUABUE7ao2i7q5iXpvW3JFaAAAVm7IsUqbIDMAFQIks0WuUSAOLKLhJxluiDp4rCqt6ou0/ueGWGrR3pt/GpGmR6MBDNXUu0dRTwdWT9Syrlnvo0o0oZYr5fIRoACoBOzTAA3AQIoUqbFys1eLAyABUDKriKVK6lLXhbnnxuJcG6dN2f1M8IV7Z4/9lP8AsynXVb6KH8HlBB6ljqq3jBmkMevrg15TPCAOvSrU6q9Er+O5ocVNxaadmu6OlhMR+NHLL88f98lHoAJiryQRsgARQAAYyVpWIW5rKOZeTJ6FHGm805N7tsqdZ4ejf9KI6aj7UQVyQdbpqPtxHTUfbiQrkg6vTUfbRPTUfbiCuSejAu2Jj5TR7umoe2iY0KUJZoQSfIK0NKa7lIxzPwbAAAAAAArKOb5LADBprcG1kUdPhgUBLjJdiLPhlQBNnwyVBvwBUtGDZZQS31LkVCVloSAAAAAAAAAAAAAAAAAAAAAAAAAB/9k="
+                                                        }
+                                                            className='post_image'></img>
                                                     </div>
                                                     <p style={{ width: '70%', marginTop: '0.5rem' }}>{item?.userData[0]?.name}</p>
                                                     <div className='timeago__'>{format(item?.date)}</div>
@@ -381,143 +383,144 @@ export default function Feed2() {
 
                                                     </>
                                                 )}
-                                            </Card>
-                                        ))}
+                                               
+                                </Card>
+                            ))}
                                 </div>
                             )
                             
                         }
 
-                    </div>
                 </div>
-                <div className='feed_right'>
-                    <div className='college_glimpses'>
-                        <div className='heading__text'>Some College Glimpses:-</div>
-                        <Card className='college_glimpses'>
-                            <ControlledCarousel />
-                        </Card>
-                    </div>
-                    {
-                        userData?.role == 'TEACHER' ?
-                            <a className='block_text' onClick={blockModalClicked}>Do you want to block a student?</a> : ' '
-                    }
-                    <div className='heading__text'>
-                        Suggestions:-
-                        <Card className='xxxx'>
-                            {suggestedPeople?.map((people) => {
+            </div>
+            <div className='feed_right'>
+                <div className='college_glimpses'>
+                    <div className='heading__text'>Some College Glimpses:-</div>
+                    <Card className='college_glimpses'>
+                        <ControlledCarousel />
+                    </Card>
+                </div>
+                {
+                    userData?.role == 'TEACHER' ?
+                        <a className='block_text' onClick={blockModalClicked}>Do you want to block a student?</a> : ' '
+                }
+                <div className='heading__text'>
+                    Suggestions:-
+                    <Card className='xxxx'>
+                        {suggestedPeople?.map((people) => {
 
-                                return <div className='suggestions'>
-                                    <div >
-                                        <img
-                                            className='people_images'
-                                            src={
-                                                people?.profilePicture
-                                                    ? showProfilePicture(people?.profilePicture)
-                                                    : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnEx5bhTjsFgrSZ2D0q6j5XKlGpXcR6An3YxL6X1GB&s"
-                                            }
-                                            alt=""
-                                        />
-                                    </div>
-                                    <div>{people.name}</div>
+                            return <div className='suggestions'>
+                                <div >
+                                    <img
+                                        className='people_images'
+                                        src={
+                                            people?.profilePicture
+                                                ? showProfilePicture(people?.profilePicture)
+                                                : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnEx5bhTjsFgrSZ2D0q6j5XKlGpXcR6An3YxL6X1GB&s"
+                                        }
+                                        alt=""
+                                    />
                                 </div>
-                            })}
-                        </Card>
+                                <div>{people.name}</div>
+                            </div>
+                        })}
+                    </Card>
 
 
-                    </div>
                 </div>
-                <Modal show={showSkillsModal} onHide={() => setShowSkillsModal(false)}>
-                    <Modal.Body className='skills_modal'>
-                        <TextField label="Enter skills" onChange={handleChange} value={newSkills} type='text' fullWidth size='small' margin='dense'
-                            InputProps={{
-                                endAdornment: (
-                                    <InputAdornment position="end">
-                                        <Button variant="outlined" onClick={setAddSkills}>Add</Button>
-                                    </InputAdornment>
-                                ),
-                            }}>
-                        </TextField>
-                        {
-                            skills && (
-                                <>
-                                    <h6>Skills:</h6>
-                                    <div style={{ display: 'flex' }}>
+            </div>
+            <Modal show={showSkillsModal} onHide={() => setShowSkillsModal(false)}>
+                <Modal.Body className='skills_modal'>
+                    <TextField label="Enter skills" onChange={handleChange} value={newSkills} type='text' fullWidth size='small' margin='dense'
+                        InputProps={{
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    <Button variant="outlined" onClick={setAddSkills}>Add</Button>
+                                </InputAdornment>
+                            ),
+                        }}>
+                    </TextField>
+                    {
+                        skills && (
+                            <>
+                                <h6>Skills:</h6>
+                                <div style={{ display: 'flex' }}>
 
-                                        {skills.map((item, index) => (
-                                            <p style={{ marginLeft: '5px' }} key={index}>{item}</p>
-                                        ))}
-                                    </div>
-                                </>
-                            )
+                                    {skills.map((item, index) => (
+                                        <p style={{ marginLeft: '5px' }} key={index}>{item}</p>
+                                    ))}
+                                </div>
+                            </>
+                        )
+                    }
+
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowSkillsModal(false)}>Close</Button>
+                    <Button variant="primary" onClick={addSkillsList}>Add Skills</Button>
+                </Modal.Footer>
+            </Modal>
+            <Modal show={showBlockModal} onHide={() => setShowBlockModal(false)} centered>
+                <Modal.Body className='skills_modal'>
+                    <Table striped bordered hover size="sm">
+                        <thead>
+                            <tr>
+                                <th>Profile</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {
+                                allStudents?.map(st => {
+                                    return <tr>
+                                        <td>
+                                            <img
+                                                style={{ border: '1px solid grey', borderRadius: '50%', width: '1rem', height: '1rem', marginRight: '1rem' }}
+                                                src={
+                                                    st?.profilePicture
+                                                        ? showProfilePicture(st?.profilePicture)
+                                                        : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnEx5bhTjsFgrSZ2D0q6j5XKlGpXcR6An3YxL6X1GB&s"
+                                                }
+                                                alt=""
+                                            />
+                                            {st?.name}
+                                        </td>
+                                        <td style={{ cursor: 'pointer' }}>
+                                            <div onClick={() => blockAStudent(st)}>
+                                                {st?.isBlocked ? 'Blocked' : 'Block'}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                })
+                            }
+                        </tbody>
+                        {
+                            showAlert ?
+                                <SweetAlert
+                                    warning
+                                    // showCancel
+                                    confirmBtnText="Yes, block it!"
+                                    confirmBtnBsStyle="danger"
+                                    title="Are you sure?"
+                                    onConfirm={blockStudent}
+                                    // onCancel={}
+                                    focusCancelBtn
+                                >
+                                    This student will not be able to login again.
+                                </SweetAlert> : ' '
                         }
 
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button variant="secondary" onClick={() => setShowSkillsModal(false)}>Close</Button>
-                        <Button variant="primary" onClick={addSkillsList}>Add Skills</Button>
-                    </Modal.Footer>
-                </Modal>
-                <Modal show={showBlockModal} onHide={() => setShowBlockModal(false)} centered>
-                    <Modal.Body className='skills_modal'>
-                        <Table striped bordered hover size="sm">
-                            <thead>
-                                <tr>
-                                    <th>Profile</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {
-                                    allStudents?.map(st => {
-                                        return <tr>
-                                            <td>
-                                                <img
-                                                    style={{ border: '1px solid grey', borderRadius: '50%', width: '1rem', height: '1rem', marginRight: '1rem' }}
-                                                    src={
-                                                        st?.profilePicture
-                                                            ? showProfilePicture(st?.profilePicture)
-                                                            : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnEx5bhTjsFgrSZ2D0q6j5XKlGpXcR6An3YxL6X1GB&s"
-                                                    }
-                                                    alt=""
-                                                />
-                                                {st?.name}
-                                            </td>
-                                            <td style={{ cursor: 'pointer' }}>
-                                                <div onClick={() => blockAStudent(st)}>
-                                                    {st?.isBlocked ? 'Blocked' : 'Block'}
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    })
-                                }
-                            </tbody>
-                            {
-                                showAlert ?
-                                    <SweetAlert
-                                        warning
-                                        // showCancel
-                                        confirmBtnText="Yes, block it!"
-                                        confirmBtnBsStyle="danger"
-                                        title="Are you sure?"
-                                        onConfirm={blockStudent}
-                                        // onCancel={}
-                                        focusCancelBtn
-                                    >
-                                        This student will not be able to login again.
-                                    </SweetAlert> : ' '
-                            }
-
-                        </Table>
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button variant="secondary" onClick={() => setShowBlockModal(false)}>Close</Button>
-                        <Button variant="primary" onClick={() => setShowBlockModal(false)}>Ok</Button>
-                    </Modal.Footer>
-                </Modal>
-            </div>
+                    </Table>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowBlockModal(false)}>Close</Button>
+                    <Button variant="primary" onClick={() => setShowBlockModal(false)}>Ok</Button>
+                </Modal.Footer>
+            </Modal>
+        </div >
             <PostalModal props={[userData, showPhotoModal, showDocModal, showModal]} UserData={userData} showPhotoModal={showPhotoModal} showDocModal={showDocModal} showModal={showModal} uploadPhoto={uploadPhoto} uploadDoc={uploadDoc} clickHandler={clickHandler} recentlyPosted={recentlyPosted} />
 
-            {/* {
+    {/* {
             showDocModal  == true?
             <PostalModal data={'document'} /> :
             showPhotoModal == true?

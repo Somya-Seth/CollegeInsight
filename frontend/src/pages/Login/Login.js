@@ -55,11 +55,11 @@ export default function Login() {
     }
   }
 
-  const handleErrors = async (msg) => {
-    if (msg == 'Invalid Password') {
+  const handleErrors = async(msg) => {
+    if(msg == 'Invalid Password'){
       setError('Invalid Password')
     }
-    else if (msg == 'user does not exist!Please Signup') {
+    else if(msg == 'user does not exist!Please Signup'){
       swal(
         "User doesnot exists",
         "Please signup",
@@ -67,8 +67,16 @@ export default function Login() {
       );
       setError('user does not exist!Please Signup')
     }
-    else if (msg == 'Email or Password Incorrect') {
+    else if(msg == 'Email or Password Incorrect'){
       setError('Email or Password Incorrect')
+    }
+    else if(msg == 'Sorry! You are blocked'){
+      swal(
+        "Sorry! Your are blocked",
+        "You will not be able to login now.",
+        "error"
+      );
+      setError('Sorry! You are blocked')
     }
   }
 
@@ -95,7 +103,7 @@ export default function Login() {
               helperText={isLoginClicked && user.password === '' ? 'This field is required' : errors == 'Invalid Password' ? 'Invalid Password' : ''} />
 
           </div>
-          <Button variant = "contained" className='forget_password_' onClick={()=>forgotPassword(user.email)} >Forget Password</Button>
+          <Button variant = "contained" className='forget_password_' onClick={()=>forgotPassword(user.email)} style={{marginBottom: '1rem', marginTop: '1rem'}}>Forget Password</Button>
           <Button variant="contained" className='login_button' onClick={login}>Login</Button>
           <div className='more_'>Don't have an account <span className='blue' onClick={() => {
             navigate('/signup')

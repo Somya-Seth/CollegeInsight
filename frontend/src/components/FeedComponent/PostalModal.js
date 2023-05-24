@@ -6,6 +6,7 @@ import Cookies from 'js-cookie';
 import { useLocation } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
+import { BsNodePlusFill } from 'react-icons/bs';
 
 
 const Container = styled.div`
@@ -181,7 +182,7 @@ export default function PostModal(props) {
 	const [userData, setUserData] = useState("");
 	const [imageUrl, setImageUrl] = useState("");
 	const location = useLocation();
-	const [DocFile, setDocFile] = useState("");
+	const [DocFile, setDocFile] = useState(null);
 	const [assetArea, setAssetArea] = useState("");
 	const inputFile = useRef(null)
 	const [postImage, setPostImage] = useState(null);
@@ -225,7 +226,6 @@ export default function PostModal(props) {
 	}
 
 	const onButtonClick = () => {
-		// `current` points to the mounted file input element
 		inputFile.current.click();
 	};
 
@@ -242,6 +242,19 @@ export default function PostModal(props) {
 		}
 	};
 
+	const handleDocUpload = e => {
+		const { files } = e.target;
+		if (files && files.length) {
+		  const filename = files[0].name;
+	
+		  var parts = filename.split(".");
+		  const fileType = parts[parts.length - 1];
+		  console.log("fileType", fileType); //ex: zip, rar, jpg, svg etc.
+	
+		  setDocFile(files[0]);
+		}
+	};
+
 	const submit = async(val) => {
 		try{
 			if(val == 'image'){
@@ -252,6 +265,21 @@ export default function PostModal(props) {
 				formData.append('image', postImage)
 	
 				const res = await axios.post("http://localhost:8000/image", formData,
+				    {
+						Headers: {
+							"Content-Type": "multipart/form-data"
+						}
+				})
+				props.uploadPhoto(res)
+			}
+			else if(val == 'document'){
+				
+				const formData = new FormData();
+				formData.append('userId', props.UserData._id)
+				formData.append('text', editorDocText)
+				formData.append('document', DocFile)
+	
+				const res = await axios.post("http://localhost:8000/doc", formData,
 				    {
 						Headers: {
 							"Content-Type": "multipart/form-data"
@@ -330,7 +358,6 @@ export default function PostModal(props) {
 											type="file"
 										/>
 										<Button onClick={onButtonClick} style={{ border: 'none', marginBottom: '1rem', color: '#0073b1', backgroundColor: '#fff', width: 'auto', height: '2rem' }}>Select an image to share</Button>
-										{/* {inputFile ? <div>{inputFile}</div> : ''} */}
 									</UploadImage>
 									<textarea value={editorImageText} onChange={(event) => setEditorImageText(event.target.value)} placeholder="Write a caption for your image" autoFocus={true} style={{ borderRadius: '1rem', border: '1px solid lightgrey', marginBottom: '1rem', padding: '2rem' }} />
 								</Form>
@@ -361,20 +388,21 @@ export default function PostModal(props) {
 								<span>{props.UserData.name}</span>
 							</UserInfo>
 							<Editor>
-								<input
-									type="File"
-									name="Document"
-									id="DocFile"
-									value={DocFile}
-									placeholder="Upload the Document"
-									onChange={(event) => setDocFile(event.target.value)}
-								/>
-								<textarea value={editorDocText} onChange={(event) => setEditorDocText(event.target.value)} placeholder="Write something about your document" autoFocus={true} style={{ borderRadius: '1rem', border: '1px solid lightgrey', marginBottom: '1rem', padding: '2rem' }} />
+								<Form encType="multipart/form-data">
+										<input
+											type="file"
+											style={{ display: "none" }}
+											ref={inputFile}
+											onChange={handleDocUpload}
+										/>
+										<Button onClick={onButtonClick} style={{ border: 'none', marginBottom: '1rem', color: '#0073b1', backgroundColor: '#fff', width: 'auto', height: '2rem' }}>Select a file to share</Button>
+									<textarea value={editorDocText} onChange={(event) => setEditorDocText(event.target.value)} placeholder="Write a caption for your document" autoFocus={true} style={{ borderRadius: '1rem', border: '1px solid lightgrey', marginBottom: '1rem', padding: '2rem' }} />
+								</Form>
 							</Editor>
 						</SharedContent>
 						<ShareCreation>
 
-							<Button style={{ marginBottom: '2rem', marginLeft: '14rem' }}>
+							<Button style={{ marginBottom: '2rem', marginLeft: '14rem' }} onClick={() => submit('document')}>
 								Post
 							</Button>
 						</ShareCreation>
