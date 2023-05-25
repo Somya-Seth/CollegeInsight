@@ -120,6 +120,7 @@ export default function Feed2() {
                     skills: skills,
                 }
             });
+            console.log("res.data.skills", res.data.skills)
             setShowSkills([...res.data.skills])
             setShowSkillsModal(false)
             console.log(res)
@@ -418,6 +419,13 @@ export default function Feed2() {
                 <div className='heading__text'>
                     Suggestions:-
                     <Card className='xxxx'>
+                        {
+                            suggestedPeople.length == 0 && (
+                                <div>
+                                    No suggestions to show.
+                                </div>
+                            ) 
+                        }
                         {suggestedPeople?.map((people) => {
 
                             return <div className='suggestions'>

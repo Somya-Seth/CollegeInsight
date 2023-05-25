@@ -50,11 +50,17 @@
     .row__{
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
+        justify-content: center;
         font-size: 0.8em;
         align-items: center;
+        margin: 3rem;
     }
     .login-form__ {
-        margin-top: 1rem;
+        margin-top: 1em;
+        width: 70vw;
+    }
+    .college-image__ {
+        width: 70vw;
+        margin: 0;
     }
 }

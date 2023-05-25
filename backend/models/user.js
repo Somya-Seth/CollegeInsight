@@ -76,7 +76,6 @@ const user = new Schema({
     skills: {
         type: Array,
         required: false,
-        default: ''
     },
     isBlocked: {
         type: Boolean,

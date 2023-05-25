@@ -193,7 +193,14 @@ export default function Profile(props) {
           <Card className="left_bottom">
             <Card.Title className="activity_heading">Activity</Card.Title>
             <Card.Body>
+              {
+                postData.length == 0 ?
+                <div className='no_post_text'>
+                    Post something to see your activity.
+                </div>
+                 : 
               <PostCard UserData={UserData} postData={postData} />
+              }
             </Card.Body>
           </Card>
         </div>
