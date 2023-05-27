@@ -18,6 +18,7 @@ import Table from 'react-bootstrap/Table';
 import SweetAlert from 'react-bootstrap-sweetalert'
 import ControlledCarousel from '../Carousel/Carousel';
 import swal from "sweetalert";
+import { MDBCol, MDBIcon } from "mdbreact";
 
 
 const CommonBox = styled.div`
@@ -105,6 +106,10 @@ export default function Feed2() {
     const [student, setStudent] = useState('');
     const [suggestedPeople, setSuggestedPeople] = useState([])
     const [summary, setSummary] = useState("")
+    const [searchQuery, setSearchQuery] = useState('')
+    const [allUsers, setAllUsers] = useState([]);
+    const [searchParam] = useState(["name"]);
+    const [searchedUsers, setSearchedUsers] = useState([])
 
     const handleChange = e => {
         const name = e.target.value
@@ -187,12 +192,12 @@ export default function Feed2() {
     }
 
     useEffect(() => {
-        async function getSummary(){
-            try{
-               const summary =  await axios.get(`http://localhost:8000/getSummary?email=${user.email}`);
-               console.log("res summary",summary.data)
-               setSummary(summary.data)
-            }catch(error){
+        async function getSummary() {
+            try {
+                const summary = await axios.get(`http://localhost:8000/getSummary?email=${user.email}`);
+                console.log("res summary", summary.data)
+                setSummary(summary.data)
+            } catch (error) {
                 console.log("error in getSumamry", error.message)
             }
         }
@@ -216,9 +221,17 @@ export default function Feed2() {
             setShowSkills(getUserData.data[0].skills)
             setSkills(getUserData.data[0].skills)
         }
+        async function getPeople() {
+            await axios.get('http://localhost:8000/allUsers', { params: user }).then(res => {
+                setAllUsers(res.data)
+            }).catch(err => {
+                console.log('error occured while getting all users in frontend', err)
+            })
+        }
         getUser()
         getSummary()
         getSuggestedPeople()
+        getPeople()
     }, [])
 
     useEffect(() => {
@@ -269,8 +282,30 @@ export default function Feed2() {
         setStudent(stud)
     }
 
+    const getUsers = (e) => {
+        setSearchQuery(e.target.value)
+        if(e.target.value == ''){
+            setSearchedUsers([])
+        }
+        const arr = allUsers.filter((item) => {
+            return searchParam.some((newItem) => {
+                return (
+                    item[newItem]
+                        .toString()
+                        .toLowerCase()
+                        .indexOf(e.target.value.toLowerCase()) > -1
+                );
+            });
+        });
+        setSearchedUsers([...arr])
+    }
+
     console.log("suggested", suggestedPeople)
 
+    const searchedNameClicked = (info) => {
+        console.log('searchedNameClicked', info);
+        navigate('/userProfile', {state: info})
+    }
 
     return (
         <>
@@ -327,6 +362,19 @@ export default function Feed2() {
                     </div>
                 </div>
                 <div className='feed_middle'>
+                    <MDBCol md="11.1">
+                        <input className="form-control" type="text" placeholder="Search your friends to see their profile ..." aria-label="Search" onChange={getUsers} value={searchQuery} />
+                    </MDBCol>
+                    {
+                        searchedUsers.length>0 && searchQuery!=''?(
+                            <Card className='searched_users_card'>
+                                {searchedUsers?.map((u) => {
+                                   return <div style={{border: '1px solid #f3f3f3', padding: '0.5rem', marginBottom: '0.5rem', cursor: 'pointer'}} onClick={() => searchedNameClicked(u)}>{u?.name}</div>
+                                }) }
+                            </Card>
+                        )
+                        : ''
+                    }
                     <div className='feed_middle_top'>
                         <ShareBox>
                             <div>
@@ -395,151 +443,151 @@ export default function Feed2() {
 
                                                     </>
                                                 )}
-                                               
-                                </Card>
-                            ))}
+
+                                            </Card>
+                                        ))}
                                 </div>
                             )
-                            
+
                         }
 
+                    </div>
                 </div>
-            </div>
-            <div className='feed_right'>
-                <div className='college_glimpses'>
-                    <div className='heading__text'>Some College Glimpses:-</div>
-                    <Card className='college_glimpses'>
-                        <ControlledCarousel />
-                    </Card>
-                </div>
-                {
-                    userData?.role == 'TEACHER' ?
-                        <a className='block_text' onClick={blockModalClicked}>Do you want to block a student?</a> : ' '
-                }
-                <div className='heading__text'>
-                    Suggestions:-
-                    <Card className='xxxx'>
-                        {
-                            suggestedPeople.length == 0 && (
-                                <div>
-                                    No suggestions to show.
-                                </div>
-                            ) 
-                        }
-                        {suggestedPeople?.map((people) => {
-
-                            return <div className='suggestions'>
-                                <div >
-                                    <img
-                                        className='people_images'
-                                        src={
-                                            people?.profilePicture
-                                                ? showProfilePicture(people?.profilePicture)
-                                                : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnEx5bhTjsFgrSZ2D0q6j5XKlGpXcR6An3YxL6X1GB&s"
-                                        }
-                                        alt=""
-                                    />
-                                </div>
-                                <div>{people.name}</div>
-                            </div>
-                        })}
-                    </Card>
-
-
-                </div>
-            </div>
-            <Modal show={showSkillsModal} onHide={() => setShowSkillsModal(false)}>
-                <Modal.Body className='skills_modal'>
-                    <TextField label="Enter skills" onChange={handleChange} value={newSkills} type='text' fullWidth size='small' margin='dense'
-                        InputProps={{
-                            endAdornment: (
-                                <InputAdornment position="end">
-                                    <Button variant="outlined" onClick={setAddSkills}>Add</Button>
-                                </InputAdornment>
-                            ),
-                        }}>
-                    </TextField>
+                <div className='feed_right'>
+                    <div className='college_glimpses'>
+                        <div className='heading__text'>Some College Glimpses:-</div>
+                        <Card className='college_glimpses'>
+                            <ControlledCarousel />
+                        </Card>
+                    </div>
                     {
-                        skills && (
-                            <>
-                                <h6>Skills:</h6>
-                                <div style={{ display: 'flex' }}>
-
-                                    {skills.map((item, index) => (
-                                        <p style={{ marginLeft: '5px' }} key={index}>{item}</p>
-                                    ))}
-                                </div>
-                            </>
-                        )
+                        userData?.role == 'TEACHER' ?
+                            <a className='block_text' onClick={blockModalClicked}>Do you want to block a student?</a> : ' '
                     }
-
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={() => setShowSkillsModal(false)}>Close</Button>
-                    <Button variant="primary" onClick={addSkillsList}>Add Skills</Button>
-                </Modal.Footer>
-            </Modal>
-            <Modal show={showBlockModal} onHide={() => setShowBlockModal(false)} centered>
-                <Modal.Body className='skills_modal'>
-                    <Table striped bordered hover size="sm">
-                        <thead>
-                            <tr>
-                                <th>Profile</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
+                    <div className='heading__text'>
+                        Suggestions:-
+                        <Card className='xxxx'>
                             {
-                                allStudents?.map(st => {
-                                    return <tr>
-                                        <td>
-                                            <img
-                                                style={{ border: '1px solid grey', borderRadius: '50%', width: '1rem', height: '1rem', marginRight: '1rem' }}
-                                                src={
-                                                    st?.profilePicture
-                                                        ? showProfilePicture(st?.profilePicture)
-                                                        : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnEx5bhTjsFgrSZ2D0q6j5XKlGpXcR6An3YxL6X1GB&s"
-                                                }
-                                                alt=""
-                                            />
-                                            {st?.name}
-                                        </td>
-                                        <td style={{ cursor: 'pointer' }}>
-                                            <div onClick={() => blockAStudent(st)}>
-                                                {st?.isBlocked ? 'Blocked' : 'Block'}
-                                            </div>
-                                        </td>
-                                    </tr>
-                                })
+                                suggestedPeople.length == 0 && (
+                                    <div>
+                                        No suggestions to show.
+                                    </div>
+                                )
                             }
-                        </tbody>
+                            {suggestedPeople?.map((people) => {
+
+                                return <div className='suggestions'>
+                                    <div >
+                                        <img
+                                            className='people_images'
+                                            src={
+                                                people?.profilePicture
+                                                    ? showProfilePicture(people?.profilePicture)
+                                                    : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnEx5bhTjsFgrSZ2D0q6j5XKlGpXcR6An3YxL6X1GB&s"
+                                            }
+                                            alt=""
+                                        />
+                                    </div>
+                                    <div>{people.name}</div>
+                                </div>
+                            })}
+                        </Card>
+
+
+                    </div>
+                </div>
+                <Modal show={showSkillsModal} onHide={() => setShowSkillsModal(false)}>
+                    <Modal.Body className='skills_modal'>
+                        <TextField label="Enter skills" onChange={handleChange} value={newSkills} type='text' fullWidth size='small' margin='dense'
+                            InputProps={{
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                        <Button variant="outlined" onClick={setAddSkills}>Add</Button>
+                                    </InputAdornment>
+                                ),
+                            }}>
+                        </TextField>
                         {
-                            showAlert ?
-                                <SweetAlert
-                                    warning
-                                    // showCancel
-                                    confirmBtnText="Yes, block it!"
-                                    confirmBtnBsStyle="danger"
-                                    title="Are you sure?"
-                                    onConfirm={blockStudent}
-                                    // onCancel={}
-                                    focusCancelBtn
-                                >
-                                    This student will not be able to login again.
-                                </SweetAlert> : ' '
+                            skills && (
+                                <>
+                                    <h6>Skills:</h6>
+                                    <div style={{ display: 'flex' }}>
+
+                                        {skills.map((item, index) => (
+                                            <p style={{ marginLeft: '5px' }} key={index}>{item}</p>
+                                        ))}
+                                    </div>
+                                </>
+                            )
                         }
 
-                    </Table>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={() => setShowBlockModal(false)}>Close</Button>
-                    <Button variant="primary" onClick={() => setShowBlockModal(false)}>Ok</Button>
-                </Modal.Footer>
-            </Modal>
-        </div >
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={() => setShowSkillsModal(false)}>Close</Button>
+                        <Button variant="primary" onClick={addSkillsList}>Add Skills</Button>
+                    </Modal.Footer>
+                </Modal>
+                <Modal show={showBlockModal} onHide={() => setShowBlockModal(false)} centered>
+                    <Modal.Body className='skills_modal'>
+                        <Table striped bordered hover size="sm">
+                            <thead>
+                                <tr>
+                                    <th>Profile</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {
+                                    allStudents?.map(st => {
+                                        return <tr>
+                                            <td>
+                                                <img
+                                                    style={{ border: '1px solid grey', borderRadius: '50%', width: '1rem', height: '1rem', marginRight: '1rem' }}
+                                                    src={
+                                                        st?.profilePicture
+                                                            ? showProfilePicture(st?.profilePicture)
+                                                            : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnEx5bhTjsFgrSZ2D0q6j5XKlGpXcR6An3YxL6X1GB&s"
+                                                    }
+                                                    alt=""
+                                                />
+                                                {st?.name}
+                                            </td>
+                                            <td style={{ cursor: 'pointer' }}>
+                                                <div onClick={() => blockAStudent(st)}>
+                                                    {st?.isBlocked ? 'Blocked' : 'Block'}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    })
+                                }
+                            </tbody>
+                            {
+                                showAlert ?
+                                    <SweetAlert
+                                        warning
+                                        // showCancel
+                                        confirmBtnText="Yes, block it!"
+                                        confirmBtnBsStyle="danger"
+                                        title="Are you sure?"
+                                        onConfirm={blockStudent}
+                                        // onCancel={}
+                                        focusCancelBtn
+                                    >
+                                        This student will not be able to login again.
+                                    </SweetAlert> : ' '
+                            }
+
+                        </Table>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={() => setShowBlockModal(false)}>Close</Button>
+                        <Button variant="primary" onClick={() => setShowBlockModal(false)}>Ok</Button>
+                    </Modal.Footer>
+                </Modal>
+            </div >
             <PostalModal props={[userData, showPhotoModal, showDocModal, showModal]} UserData={userData} showPhotoModal={showPhotoModal} showDocModal={showDocModal} showModal={showModal} uploadPhoto={uploadPhoto} uploadDoc={uploadDoc} clickHandler={clickHandler} recentlyPosted={recentlyPosted} />
 
-    {/* {
+            {/* {
             showDocModal  == true?
             <PostalModal data={'document'} /> :
             showPhotoModal == true?

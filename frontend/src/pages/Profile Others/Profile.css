@@ -1,0 +1,248 @@
+.profile_root {
+    width: auto;
+    margin: 2rem 10rem 4rem 10rem;
+    display: flex;
+    flex-direction: row;
+}
+.left{
+    width: 70rem;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    margin-right: 2rem;
+    margin-bottom: 4rem;
+}
+.right{
+    width: 20rem;
+    display: flex;
+    flex-direction: column;
+}
+.upper_background {
+    background-color: rgb(116, 116, 116);
+    height: 25vh;
+    border-radius: 0.3rem;
+}
+.lower_background{
+    background-color: white;
+    height: auto;
+    margin-bottom: 2rem;
+}
+.profile_image{
+    display: inline-block;
+    width: 13rem;
+    height: 13rem;
+    border-radius: 50%;
+    margin-top: -6rem;
+    margin-left: 2rem;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+    background-image: url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQugI-fjEQY6QgiF50IgnxXivFmtuQS3BBbnA&usqp=CAU/200X200");
+}
+.profile_picture {
+    border-radius: 50%;
+    width: 13rem;
+    height: 13rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 4px solid grey;
+    /* object-fit: contain; */
+}
+.imp_details {
+    margin-top: -6.5rem;
+    margin-left: 20rem;
+    font-size: 1.8rem;
+    color: #3D3C4A;
+}
+.user_name {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-right: 2rem;
+}
+.course, .year {
+    font-size: 1.3rem;
+}
+/* .edit_profile_btn {
+    margin-top: -10rem;
+    margin-left: 54rem;
+} */
+.right_top {
+    height: auto;
+    padding: 1rem 0rem 1rem 1rem;
+    margin-bottom: 2rem;
+}
+.heading_right {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+.right_bottom {
+    height: auto;
+    padding: 1rem;
+    margin-bottom: 2rem;
+}
+.inner_text {
+    color: cadetblue;
+    font-size: 0.8rem;
+    margin-left: 2rem;
+    margin-bottom: 0.5rem;
+}
+.text_ {
+    margin-left: 1rem;
+    font-size: 1rem;
+}
+.edit_icon {
+    border: 2px solid grey;
+    border-radius: 50%;
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+.left_top {
+    margin-bottom: 2rem;
+}
+.left_middle {
+    padding: 1rem;
+    margin-bottom: 2rem;
+}
+.summary, .additional_details {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.summary_heading{
+    font-size: 1.5rem;
+}
+.additional_details_heading  {
+    font-size: 1.2rem;
+}
+.left_bottom {
+    padding: 1rem;
+}
+.activity_heading {
+    font-size: 1.5rem;
+}
+.edit_icon_summary {
+    border: 2px solid grey;
+    border-radius: 50%;
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+.suggested_people_profile_icon {
+    border-radius: 50%;
+    width: 2rem;
+    height: 2rem;
+    border: 1px solid black;
+    display: inline-grid;
+    margin-right: 1rem;
+}
+.suggested_people_name {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+.rating_btn {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    margin-right: 2rem;
+}
+.camera_icon {
+    margin-top: 9rem;
+    margin-left: 11.2rem;
+    width: 2rem;
+    height: 2rem;
+    display: inline-block;
+    cursor: pointer;
+}
+
+/* media queries */
+
+@media screen and (max-width: 1000px){
+    .profile_root {
+        min-width: 30vw;
+        margin: 2rem;
+        display: flex;
+        flex-direction: column;
+    }
+    .left{
+        width: auto;
+        height: auto;
+        display: flex;
+        flex-direction: column;
+        margin-right: 0;
+        margin-bottom: 2rem;
+    }
+    .right{
+    width: auto;
+    display: flex;
+    flex-direction: column;
+    }
+    .edit_profile_btn {
+        display: none;
+    }
+    .profile_image{
+    width: 8rem;
+    height: 8rem;
+    border-radius: 50%;
+    border: 3px solid white;
+    margin-top: -3rem;
+    margin-left: 2rem;
+    }
+    .profile_picture {
+    border-radius: 50%;
+    width: 8rem;
+    height: 8rem;
+    display: flex;
+    align-items: center;
+    }
+    .imp_details {
+    margin-top: -6rem;
+    margin-left: 50vw;
+    font-size: 1.2rem;
+    color: #3D3C4A;
+    }
+    .course, .year {
+    font-size: 1rem;
+    }
+    .lower_background{
+    background-color: white;
+    height: auto;
+    margin-bottom: 2rem;
+    }
+    .upper_background {
+        height: 20vh;
+    }
+    .user_name {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        margin-right: 1rem;
+        margin-top: 1.4rem;
+    }
+    .camera_icon {
+        margin-top: 5.5rem;
+        margin-left: 7rem;
+        width: 1.5rem;
+        height: 1.5rem;
+        display: inline-block;
+        cursor: pointer;
+        position: absolute;
+    }
+    .rating_btn {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        margin-left: 2rem;
+        margin-top: 1rem;
+    }
+}
