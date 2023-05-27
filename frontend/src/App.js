@@ -11,6 +11,7 @@ import Messenger from "./messenger/Messenger";
 import { AuthContext } from "./Context/AuthContext";
 import ForgotPassword from "./pages/forgetPassword/forgotPassword";
 import ResetPassword from "./pages/resetPassword/resetPassword";
+import UserProfile from './pages/Profile Others/Profile'
 
 function App() {
   // const { user } = useContext(AuthContext);
@@ -26,6 +27,7 @@ function App() {
         <Route exact path="/messenger" element={<Messenger />}></Route>
         <Route exact path = "/forgotPassword" element={<ForgotPassword/>}></Route>
         <Route exact path = "/resetpassword/:token" element={<ResetPassword/>}></Route>
+        <Route exact path = "/userprofile" element={<UserProfile/>}></Route>
       </Routes>
     </BrowserRouter>
   );

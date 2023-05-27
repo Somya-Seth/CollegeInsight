@@ -23,6 +23,9 @@
 .feed_middle {
     width: 40%;
 }
+.searchInput {
+    width: 40%;
+}
 .feed_right {
     margin-right: 5%;
     width: 25%;
@@ -180,6 +183,9 @@
     height: 80vh;
     overflow-y: scroll;
     padding-right: 10px;
+}
+.searched_users_card {
+    padding: 1rem;
 }
 
 @media screen and (max-width: 1000px) {
