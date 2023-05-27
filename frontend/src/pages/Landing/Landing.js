@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Button from '@mui/material/Button';
 import './Landing.css'
 import { FaQuestion, FaShare, FaLightbulb } from 'react-icons/fa';
-import Logo from './srgilogo.jpg'
+import Logo from './CI_logo.png'
 import Navbar from '../../components/Navbar/Navbar'
 
 
@@ -20,19 +20,21 @@ export default function Home() {
         <>
         {/* <Navbar/> */}
             <div className='home-root'>
-                <img className='srgi_logo_img' src={Logo} alt="Logo"/>
+                <img className='ci_logo_img' src={Logo} alt="Logo"/>
                 <div className='left-home'>
                     <div className='home-heading'>
                         <div>Connect with Faculty <br></br>and Students</div>
 
                     </div>
                     <div className='home-para'>
-                        <p>Interact with your Teachers, Seniors, Juniors on Common Platform.<br></br>Get Every Information regarding College on a Single Platform<br></br>and help each other</p>
+                        <p>Interact with your Teachers, Seniors, Juniors on Common Platform.<br></br>
+                        Get Every Information regarding College on a Single Platform<br></br>
+                        and help each other</p>
                     </div>
-                    <div className='home-login'>
+                    <div className='home-login btnStyle'>
                         <Button variant="contained" onClick={routeChangeLogin}>Login</Button>
                     </div>
-                    <div className='home-signup'>
+                    <div className='home-signup btnStyle'>
                         <Button variant="contained" onClick={routeChangeSignUp}>SignUp</Button>
                     </div>
                 </div>
