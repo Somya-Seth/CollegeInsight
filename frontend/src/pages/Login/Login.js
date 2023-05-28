@@ -1,4 +1,4 @@
-import React, {useState, useContext} from 'react'
+import React, { useState, useContext } from 'react'
 import TextField from '@mui/material/TextField';
 import { Button } from '@mui/material';
 import srgilogo from '../../image/slogo.jpeg'
@@ -19,9 +19,9 @@ export default function Login() {
     password: "",
   })
 
-  
+
   const handleChange = e => {
-    const {name, value} = e.target
+    const { name, value } = e.target
     setUser({
       ...users,
       [name]: value
@@ -30,9 +30,9 @@ export default function Login() {
 
   const [errors, setError] = useState('');
   const [isLoginClicked, loginClicked] = useState(false);
-  const { isFetching,isLoggedIn, dispatch, error } = useContext(AuthContext);
+  const { isFetching, isLoggedIn, dispatch, error } = useContext(AuthContext);
 
-  const forgotPassword = async function(email){
+  const forgotPassword = async function (email) {
     try {
       console.log("email", email);
       // await axios.post('http://localhost:8000/forgetpassword', {email}).then(res => {
@@ -45,47 +45,49 @@ export default function Login() {
     }
   }
 
-  
+
   // when login button is clicked
-  const login = async() => {
-    console.log("users in ",users)
+  const login = async () => {
+    console.log("users in ", users)
     const userData = await axios.get(`http://localhost:8000/users?email=${users.email}`)
-    console.log("userData",userData.data)
+    console.log("userData", userData.data[0].isVerified)
     loginClicked(true)
-    if(users.email && users.password && users.isVerified){
-      try{
+    if (users.email && users.password && userData.data[0].isVerified) {
+      try {
         await loginCall(
-          {email: users.email, password: users.password},
+          { email: users.email, password: users.password },
           dispatch
         ).then(res => {
-          if(res == 'Sorry! You are blocked'){
+          if (res == 'Sorry! You are blocked') {
             handleErrors('Sorry! You are blocked')
           }
-          else if(res == 'user does not exist!Please Signup'){
+          else if (res == 'user does not exist!Please Signup') {
             handleErrors('user does not exist!Please Signup')
           }
-          else if(res == 'Invalid Password'){
+          else if (res == 'Invalid Password') {
             handleErrors('Invalid Password')
           }
-          else{
+          else {
             navigate('/feed')
           }
         })
-        .catch(err => {
-          console.log(err)
-        });
+          .catch(err => {
+            console.log(err)
+          });
       }
-      catch(err){
+      catch (err) {
         console.log("error occured in loggin in", err)
       }
+    } else if (!userData.data[0].isVerified) {
+      handleErrors("First Verify Yourself Through Mail by signing in with Correct Mailid")
+    }
   }
-}
 
-const handleErrors = async(msg) => {
-    if(msg == 'Invalid Password'){
+  const handleErrors = async (msg) => {
+    if (msg == 'Invalid Password') {
       setError('Invalid Password')
     }
-    else if(msg == 'user does not exist!Please Signup'){
+    else if (msg == 'user does not exist!Please Signup') {
       swal(
         "User doesnot exists",
         "Please signup",
@@ -93,52 +95,57 @@ const handleErrors = async(msg) => {
       );
       setError('user does not exist!Please Signup')
     }
-    else if(msg == 'Email or Password Incorrect'){
+    else if (msg == 'Email or Password Incorrect') {
       setError('Email or Password Incorrect')
     }
-    else if(msg == 'Sorry! You are blocked'){
+    else if (msg == 'Sorry! You are blocked') {
       swal(
         "Sorry! Your are blocked",
         "You will not be able to login now.",
         "error"
       );
       setError('Sorry! You are blocked')
+    } else if (msg == "First Verify Yourself Through Mail by signing in with Correct Mailid") {
+      swal("Sorry! Your are not verified!",
+        "Verify Yourself through Mail with which you have Registered",
+        "error")
+      setError("First Verify Yourself Through Mail by signing in with Correct Mailid")
     }
   }
 
   return (
     <>
-    <div className='row__'>
-      <div className='col-7 college-image__'>
-        {/* <Carousel className="carousel"/>     */}
-        <img src={image1} className='image__' alt='' />
-      </div>
-      <div className='col login-form__'>
-        <div className='inner'>
-          <img src={srgilogo} className="srgi-logo" alt='logo' />
-          <h3>COLLEGE INSIGHT</h3>
-          <div>
+      <div className='row__'>
+        <div className='col-7 college-image__'>
+          {/* <Carousel className="carousel"/>     */}
+          <img src={image1} className='image__' alt='' />
+        </div>
+        <div className='col login-form__'>
+          <div className='inner'>
+            <img src={srgilogo} className="srgi-logo" alt='logo' />
+            <h3>COLLEGE INSIGHT</h3>
+            <div>
 
-            <TextField id="outlined-basic" label="Email" type='email' variant="outlined" fullWidth size='small' margin='dense' value={users.email} name="email" onChange={handleChange} 
-            required
-            error={isLoginClicked && (users.email===""|| errors == 'Email or Password Incorrect')}
-            helperText={isLoginClicked && users.email===''?'This field is required' : errors == 'Email or Password Incorrect' ? 'Email or Password Incorrect' : ''}/>
+              <TextField id="outlined-basic" label="Email" type='email' variant="outlined" fullWidth size='small' margin='dense' value={users.email} name="email" onChange={handleChange}
+                required
+                error={isLoginClicked && (users.email === "" || errors == 'Email or Password Incorrect')}
+                helperText={isLoginClicked && users.email === '' ? 'This field is required' : errors == 'Email or Password Incorrect' ? 'Email or Password Incorrect' : ''} />
 
-            <TextField id="outlined-basic" label="password" type='password' variant="outlined" fullWidth size='small' margin='dense' value={users.password} name="password" onChange={handleChange}
-            required
-            error={isLoginClicked && (users.password === ''|| errors == 'Invalid Password')}
-            helperText={isLoginClicked && users.password === '' ? 'This field is required' : errors == 'Invalid Password' ? 'Invalid Password': ''} />
+              <TextField id="outlined-basic" label="password" type='password' variant="outlined" fullWidth size='small' margin='dense' value={users.password} name="password" onChange={handleChange}
+                required
+                error={isLoginClicked && (users.password === '' || errors == 'Invalid Password')}
+                helperText={isLoginClicked && users.password === '' ? 'This field is required' : errors == 'Invalid Password' ? 'Invalid Password' : ''} />
 
+            </div>
+            <Button variant="contained" className='forget_password_' onClick={() => forgotPassword(users.email)} style={{ marginBottom: '1rem', marginTop: '0.5rem' }}>Forget Password</Button>
+            <Button variant="contained" className='login_button' onClick={login}>Login</Button>
+            <div className='more_'>Don't have an account <span className='blue' onClick={() => {
+              navigate('/signup')
+            }}>Signup</span></div>
+            <div className='more_'>Want to know about college? <a href='https://srgi.ac.in/' className='blue' target='__blank'>Go here</a></div>
           </div>
-          <Button variant = "contained" className='forget_password_' onClick={()=>forgotPassword(users.email)} style={{marginBottom: '1rem', marginTop: '0.5rem'}}>Forget Password</Button>
-          <Button variant="contained"  className='login_button' onClick={login}>Login</Button>
-          <div className='more_'>Don't have an account <span className='blue' onClick={() => {
-            navigate('/signup')
-          }}>Signup</span></div>
-          <div className='more_'>Want to know about college? <a href='https://srgi.ac.in/' className='blue' target='__blank'>Go here</a></div>
         </div>
       </div>
-    </div>
     </>
   )
 }
