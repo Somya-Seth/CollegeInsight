@@ -17,16 +17,16 @@ let randomstring = require("randomstring");
 
 const uploadimage = async (req, res, next) => {
     try {
-    const user = {
-        email:"xyz@gmail.com"
-    }
+        const user = {
+            email: "xyz@gmail.com"
+        }
         const imageUrl = `http://localhost:8000/${req.file}`;
-        const users = await User.findOneAndUpdate({ email: user.email}, {profilePicture: imageUrl });
+        const users = await User.findOneAndUpdate({ email: user.email }, { profilePicture: imageUrl });
         return res.status(200).json({ message: 'profile picture updated successfully' });
-    //   });
+        //   });
     } catch (error) {
-      console.log(error);
-      res.status(500).send("Server error");
+        console.log(error);
+        res.status(500).send("Server error");
     }
 };
 const signup = async (req, res) => {
@@ -80,18 +80,20 @@ const hashPassword = async (password) => {
 
 }
 const getUser = async (req, res, next) => {
+    console.log("email",req.query.email)
     const users = await User.find({ email: req.query.email });
+    console.log("users",users)
     return res.json(users);
 }
 const getpost = async (req, res, next) => {
     try {
-        
+
         console.log("req.query", req.query);
         const response = await Post.find({
             userId: { $ne: req.query._id },
-        }).sort({date: -1})
+        }).sort({ date: -1 })
         console.log("res.data in posts", response.data);
-        for(let i=0;i<response.length;i++){
+        for (let i = 0; i < response.length; i++) {
             const userData = await User.find({ _id: response[i]._doc.userId })
             response[i]._doc['userData'] = userData
         }
@@ -100,39 +102,39 @@ const getpost = async (req, res, next) => {
         return res.status(400).json(err.message)
     }
 }
-const addSkills = async(req,res,next)=>{
-    try{        
+const addSkills = async (req, res, next) => {
+    try {
         const data = await User.findByIdAndUpdate(req.body.body.userId, { skills: req.body.body.skills }, { new: true });
-        console.log("hello",data)
+        console.log("hello", data)
         const ret = await data.save()
         return res.status(200).json(ret)
     }
-    catch(err){
+    catch (err) {
         return res.status(400).json(err)
     }
 }
-const postsummary = async(req,res,next) => {
-    try{
-        const data = await User.findByIdAndUpdate(req.body.userId, {summary: req.body.body}, { new: true });
+const postsummary = async (req, res, next) => {
+    try {
+        const data = await User.findByIdAndUpdate(req.body.userId, { summary: req.body.body }, { new: true });
         const ret = await data.save()
         return res.status(200).json(ret)
-    }catch(err){
+    } catch (err) {
         console.log(err)
         return res.status(400).json(err)
     }
 }
 
-const getSummary = async(req,res,next) => {
-    try{
-        const data = await User.find({email:req.query.email});
-        console.log("data",data)
+const getSummary = async (req, res, next) => {
+    try {
+        const data = await User.find({ email: req.query.email });
+        console.log("data", data)
         const resSummary = data[0].summary;
 
-        const response = resSummary.substring(0,101)+".......";
-        console.log("output",response)
+        const response = resSummary.substring(0, 101) + ".......";
+        console.log("output", response)
 
         return res.status(200).json(response)
-    }catch(err){
+    } catch (err) {
         console.log(err)
         return res.status(400).json(err)
     }
@@ -165,8 +167,8 @@ const login = async (req, res) => {
     try {
         console.log("req body", req.body)
         let user = await User.find({ email: req.body.email })
-        if(user.length > 0 && user[0].isBlocked == true){
-            return res.status(400).json({message: 'Sorry! You are blocked'});
+        if (user.length > 0 && user[0].isBlocked == true) {
+            return res.status(400).json({ message: 'Sorry! You are blocked' });
         }
         console.log("user", user)
         let userExist;
@@ -201,50 +203,50 @@ const login = async (req, res) => {
     }
 }
 
-const getProfilePicture = async(req, res) => {
-    const user = await User.find({email: req.query.email})
-    if(user){
+const getProfilePicture = async (req, res) => {
+    const user = await User.find({ email: req.query.email })
+    if (user) {
         res.status(200).json(user)
     }
-    else{
-        res.status(404).json({message: 'user not found'})
+    else {
+        res.status(404).json({ message: 'user not found' })
     }
 }
 
-const getUserById = async(req, res) => {
+const getUserById = async (req, res) => {
     try {
         console.log("req query userId", req.query.userId)
         const user = await User.findById(req.query.userId);
         res.status(200).json(user)
-      } catch (err) {
+    } catch (err) {
         res.status(500).json(err);
-      }
+    }
 }
 
-const getAllUsers = async(req, res) => {
-    try{
-        const allUsers = await User.find({email: {$nin: [req.query.email]}})
+const getAllUsers = async (req, res) => {
+    try {
+        const allUsers = await User.find({ email: { $nin: [req.query.email] } })
         res.status(200).json(allUsers)
-    }catch(err) {
+    } catch (err) {
         res.status(500).json(err)
     }
 }
 
-const getAllStudents = async(req, res) => {
-    try{
-        const allUsers = await User.find({email: {$nin: [req.query.email]}, role: {$nin: [req.query.role]}})
+const getAllStudents = async (req, res) => {
+    try {
+        const allUsers = await User.find({ email: { $nin: [req.query.email] }, role: { $nin: [req.query.role] } })
         res.status(200).json(allUsers)
-    }catch(err) {
+    } catch (err) {
         res.status(500).json(err)
     }
 }
 
-const blockStudent = async(req, res) => {
-    try{
-        const data = await User.findByIdAndUpdate(req.query.userId, {isBlocked: true}, { new: true })
+const blockStudent = async (req, res) => {
+    try {
+        const data = await User.findByIdAndUpdate(req.query.userId, { isBlocked: true }, { new: true })
         const ret = await data.save()
         return res.status(200).json(ret)
-    }catch(err){
+    } catch (err) {
         res.status(500).json(err)
     }
 }
@@ -276,6 +278,40 @@ const forgotPassword = async (req, res) => {
     }
 }
 
+const verifyUserMail = async (req, res) => {
+    try {
+        const email = req.body.email;
+        console.log("email",email)
+        const transporter = nodemailer.createTransport({
+            service: "gmail",
+            port: 587,
+            auth: {
+                user: "CollegeInsight2023@gmail.com",
+                pass: "biyfwxeccgiyqhyw"
+            }
+        })
+        let info = await transporter.sendMail({
+            from: "CollegeInsight2023@gmail.com", // sender address
+            to: email, // list of receivers
+            subject: "Reset Password", // Subject line
+            text: `Hi I am Please click on the link http://localhost:3000/verifiedUserMail/${email}\n\n`
+        });
+        console.log("Message sent: %s", info.messageId);
+    } catch (error) {
+        console.log("err in verification",err.message)
+        res.status(500).send({ success: false, msg: error.messsage })
+    }
+}
+const setIsVerifedtrue = async (req, res) => {
+    try {
+        const email = req.body.email;
+        const user = await User.updateOne({ email: email }, { $set: { isVerified: true } })
+        console.log("setIsVerifedtrue done");
+        res.status(200).send({success:true})
+    } catch (error) {
+        res.status(500).send({ success: false, msg: err.messsage })
+    }
+}
 const reset_password = async (req, res) => {
     try {
         const token = req.query.token;
@@ -340,25 +376,25 @@ const resetPasswordMail = async (email, name, token) => {
     }
 }
 
-const getSuggestedPeople = async (req,res)=>{
-    try{
-        const sugggestedUsers = await User.find({email:{$ne:req.query.email}}).limit(5)
-        console.log("users",sugggestedUsers.length);
+const getSuggestedPeople = async (req, res) => {
+    try {
+        const sugggestedUsers = await User.find({ email: { $ne: req.query.email } }).limit(5)
+        console.log("users", sugggestedUsers.length);
         return res.status(200).json(sugggestedUsers);
-    }catch(error){
+    } catch (error) {
         console.log("err", error.message);
-        return res.status(400).send({success:false,msg:err.message})
+        return res.status(400).send({ success: false, msg: err.message })
     }
 }
 
-const getSelfPosts = async(req, res) => {
+const getSelfPosts = async (req, res) => {
     try {
         console.log("req.query", req.query);
-        const id = await User.find({email: req.query.email})
+        const id = await User.find({ email: req.query.email })
         console.log("iddddd", id[0]._id)
         const response = await Post.find({
             userId: id[0]._id,
-        }).sort({date: -1})
+        }).sort({ date: -1 })
         console.log("res.data in posts", response);
         return res.status(200).json(response)
     } catch (err) {
@@ -367,4 +403,4 @@ const getSelfPosts = async(req, res) => {
 }
 
 
-module.exports = { signup,addSkills, login, getUser, post, getpost, postlike, uploadimage, postsummary, getProfilePicture, getUserById, getAllUsers, getSummary, getAllStudents, blockStudent ,forgotPassword, reset_password, resetPasswordMail,getSuggestedPeople, getSelfPosts}
+module.exports = { signup, addSkills, login, getUser, post, getpost, postlike, uploadimage, postsummary, getProfilePicture, getUserById, getAllUsers, getSummary, getAllStudents, blockStudent, forgotPassword, reset_password, resetPasswordMail, getSuggestedPeople, getSelfPosts,verifyUserMail,setIsVerifedtrue }

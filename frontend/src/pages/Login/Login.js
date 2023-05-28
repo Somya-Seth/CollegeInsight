@@ -48,8 +48,11 @@ export default function Login() {
   
   // when login button is clicked
   const login = async() => {
+    console.log("users in ",users)
+    const userData = await axios.get(`http://localhost:8000/users?email=${users.email}`)
+    console.log("userData",userData.data)
     loginClicked(true)
-    if(users.email && users.password){
+    if(users.email && users.password && users.isVerified){
       try{
         await loginCall(
           {email: users.email, password: users.password},

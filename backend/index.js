@@ -128,7 +128,7 @@ app.get('/getSummary', async function (req, res) {
 })
 app.get('/users', async function (req, res) {
     try {
-
+        console.log("get Users")
         await router.getUser(req, res)
 
     } catch (err) {
@@ -136,6 +136,24 @@ app.get('/users', async function (req, res) {
         res.status(500).json({ message: 'Server error' });
     }
 });
+
+app.post('/verifyUserMail', async function (req, res) {
+    try {
+        console.log('verifyUserMail hit')
+        await router.verifyUserMail(req, res);
+    } catch (err) {
+        console.log("error message in verifyUserMail", err.message)
+    }
+})
+
+app.post("/setIsVerifedtrue", async function (req, res) {
+    try {
+        await router.setIsVerifedtrue(req, res);
+
+    } catch (err) {
+        console.log("error message in setIsVerifedtrue", err.message)
+    }
+})
 
 var storage = multer.diskStorage({
     destination: (req, file, cb) => {

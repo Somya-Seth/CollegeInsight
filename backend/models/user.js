@@ -80,6 +80,10 @@ const user = new Schema({
     isBlocked: {
         type: Boolean,
         default: false
+    },
+    isVerified:{
+        type:Boolean,
+        default:false
     }
 })
 const User = mongoose.model('User', user);

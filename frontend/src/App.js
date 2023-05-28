@@ -12,6 +12,7 @@ import { AuthContext } from "./Context/AuthContext";
 import ForgotPassword from "./pages/forgetPassword/forgotPassword";
 import ResetPassword from "./pages/resetPassword/resetPassword";
 import UserProfile from './pages/Profile Others/Profile'
+import VerifyUserMail from "./pages/verifyUserMail/verifyUserMail";
 
 function App() {
   // const { user } = useContext(AuthContext);
@@ -28,6 +29,8 @@ function App() {
         <Route exact path = "/forgotPassword" element={<ForgotPassword/>}></Route>
         <Route exact path = "/resetpassword/:token" element={<ResetPassword/>}></Route>
         <Route exact path = "/userprofile" element={<UserProfile/>}></Route>
+        <Route exact path = "/verifiedUserMail/:email" element={<VerifyUserMail/>}></Route>
+
       </Routes>
     </BrowserRouter>
   );
