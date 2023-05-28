@@ -106,7 +106,7 @@ export default function Signup() {
             </TextField>
           </div>
           <div className='forget_password'></div>
-          <Button fullWidth className='signup_button' onClick={register}>signup</Button>
+          <button fullWidth className='signup_button' onClick={register}>SIGNUP</button>
           <div className='more_'>Want to know about college? <a href='https://srgi.ac.in/' className='blue' target='__blank'>Go here</a></div>
         </div>
       </div>
