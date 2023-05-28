@@ -1,42 +1,73 @@
 .row__ {
-    margin: 10rem;
     display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+    margin: 0;
+    background-image: linear-gradient(rgba(255, 255, 255, 0.5), rgba(0, 0, 139, 0.9)),
+        url('../../image/image2.jpg');
+    height: 100vh;
+    width: 100vw;
+    background-repeat: no-repeat;
+    object-fit: contain;
+    background-position: center;
+    background-size: cover;
 }
-.college-image__ {
-    width: 35rem;
-    height: auto;
-    display: flex;
-    justify-content: center;
-    margin-right: 3rem;
-}
+
 .login-form__ {
     width: 30rem;
     height: auto;
-    padding: 0.5rem;
-    padding-top: 0;
-    border: 1px solid black;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 20vh;
+    margin-bottom: auto;
     border-radius: 1rem;
+    background-color: rgba(255, 255, 255, 0.7);
+    box-shadow: 0 0 20px #000000;
+    padding-bottom: 1.5em;
 }
+
 .inner {
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 0.5rem;
 }
-.srgi-logo {
-    width: 8em;
-    height: 8em;
-    margin: 1em 0em 0em 1em;
+.ci-logo {
+    width: auto;
+    height: 3.5em;
+    margin: 2em 0em 1em 0.5em;
+}
+
+.login_textFields{
+    margin: 1.5em auto;
 }
 .forget_password_ {
-    color: blue;
+    border: none;
+    border-radius: 5px;
+    color: #fff; 
     margin-top: 0.5em;
-    margin-bottom: 1.5rem;
+    padding: 0.5rem 2rem;
+    background-image: linear-gradient(to right, #021B79 0%, #0575E6   51%, #021B79  100%);
+    transition: 0.5s; 
+    background-size: 200% auto; 
+    box-shadow: 0 0 20px #eee;
+
+}
+.forget_password_:hover{
+    background-position: right center;
 }
 .login_button {
     margin-top: 1rem;
+    border: none;
+    border-radius: 5px;
+    color: #fff; 
+    margin-top: 0.5em;
+    padding: 0.5rem 2rem;
+    background-image: linear-gradient(to right, #021B79 0%, #0575E6   51%, #021B79  100%);
+    transition: 0.5s; 
+    background-size: 200% auto; 
+    box-shadow: 0 0 20px #eee;
+}
+.login_button:hover{
+    background-position: right center;
 }
 .more_ {
     margin-top: 0.5em;

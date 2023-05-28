@@ -35,7 +35,7 @@
 }
 .cover {
     height: 7rem;
-    background-color: #f3f3f3;
+    background-color: #c3d8ff;
     border-radius: 0.5rem;
 }
 .main_content {
@@ -46,8 +46,8 @@
 .imggg>img {
     width: 5rem;
     height: 5rem;
-    border: 3px solid gray;
-    border-radius: 2rem;
+    border: 3px solid #c3d8ff;
+    border-radius: 50px;
     margin-top: -3rem;
     /* background-color: white; */
 }
@@ -79,14 +79,14 @@
 }
 .activity_person_image {
     display: flex;
-    border: 1px solid grey;
+    border: 1px solid #c3d8ff;
     border-radius: 50%;
     width: 3rem;
     height: 3rem;
     margin-right: 2rem;
 }
 .activity_card {
-    padding: 0.5rem;
+    padding: 1rem 1.5rem;
     font-size: 1.1rem;
     margin-bottom: 0.8rem;
 }
@@ -102,7 +102,8 @@
     margin-top: -0.5rem;
 }
 .post_img {
-    height: 10rem;
+    height: 16rem;
+    width: auto;
     border: 1px solid grey;
     border-radius: 0.5rem;
     margin-bottom: 0.7rem;
@@ -114,6 +115,7 @@
     transform: scale(2.5); 
 } */
 .post_img__ {
+    width: auto;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -125,7 +127,7 @@
 }
 .no_post_text {
     font-size: 2rem;
-    color: #8b8888;
+    color: #dcddf9;
     display: flex;
     flex-direction: row;
     align-items: center;

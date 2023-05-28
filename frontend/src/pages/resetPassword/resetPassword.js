@@ -31,9 +31,9 @@ function ResetPassword(props) {
 
   return (
     <>
-      <div className='container'>
-        <div className='inner-container'>
-          <h2>Enter New Password</h2>
+      <div className="forget_pass_container">
+        <div className='forget_pass_form_2'>
+          <h2 style={{marginTop:"2rem"}}>Enter New Password</h2>
           <TextField id="outlined-basic" style={{marginBottom: '1rem'}} label="Password" type='password' variant="outlined" fullWidth size='small' margin='dense' value={password} name="email" onChange={handleChange}></TextField>
           <Button variant="contained" onClick={() => changePassword(password)} className='c_p_btn'>Change Password</Button>
         </div>

@@ -48,11 +48,16 @@ export default function Login() {
 
   // when login button is clicked
   const login = async () => {
+<<<<<<< HEAD
     console.log("users in ", users)
     const userData = await axios.get(`http://localhost:8000/users?email=${users.email}`)
     console.log("userData", userData.data[0].isVerified)
     loginClicked(true)
     if (users.email && users.password && userData.data[0].isVerified) {
+=======
+    loginClicked(true)
+    if (users.email && users.password) {
+>>>>>>> 375a4a3495a1f32a1a645b5264a196004199dcbd
       try {
         await loginCall(
           { email: users.email, password: users.password },
@@ -78,8 +83,11 @@ export default function Login() {
       catch (err) {
         console.log("error occured in loggin in", err)
       }
+<<<<<<< HEAD
     } else if (!userData.data[0].isVerified) {
       handleErrors("First Verify Yourself Through Mail by signing in with Correct Mailid")
+=======
+>>>>>>> 375a4a3495a1f32a1a645b5264a196004199dcbd
     }
   }
 
@@ -116,10 +124,22 @@ export default function Login() {
   return (
     <>
       <div className='row__'>
+<<<<<<< HEAD
+        <div className='col-7 college-image__'>
+          {/* <Carousel className="carousel"/>     */}
+          <img src={image1} className='image__' alt='' />
+        </div>
+        <div className='col login-form__'>
+          <div className='inner'>
+            <img src={srgilogo} className="srgi-logo" alt='logo' />
+            <h3>COLLEGE INSIGHT</h3>
+            <div>
+=======
         <div className='login-form__'>
           <div className='inner'>
             <img src={cilogo} className="ci-logo" alt='logo' />
             <div className='login_textFields'>
+>>>>>>> 375a4a3495a1f32a1a645b5264a196004199dcbd
 
               <TextField id="outlined-basic" label="Email" type='email' variant="outlined" fullWidth size='small' margin='dense' value={users.email} name="email" onChange={handleChange}
                 required
@@ -132,8 +152,13 @@ export default function Login() {
                 helperText={isLoginClicked && users.password === '' ? 'This field is required' : errors == 'Invalid Password' ? 'Invalid Password' : ''} />
 
             </div>
+<<<<<<< HEAD
+            <Button variant="contained" className='forget_password_' onClick={() => forgotPassword(users.email)} style={{ marginBottom: '1rem', marginTop: '0.5rem' }}>Forget Password</Button>
+            <Button variant="contained" className='login_button' onClick={login}>Login</Button>
+=======
             <button className='forget_password_' onClick={() => forgotPassword(users.email)}>Forget Password</button>
             <button className='login_button' onClick={login}>Login</button>
+>>>>>>> 375a4a3495a1f32a1a645b5264a196004199dcbd
             <div className='more_'>Don't have an account <span className='blue' onClick={() => {
               navigate('/signup')
             }}>Signup</span></div>
