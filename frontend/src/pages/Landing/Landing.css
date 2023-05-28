@@ -1,7 +1,7 @@
 .home-root {
     display: flex;
     margin: 0;
-    background-image: linear-gradient(rgba(252, 252, 252, 0.9), rgba(0, 0, 139, 0.8)),
+    background-image: linear-gradient(rgba(252, 252, 252, 0.95), rgba(0, 0, 139, 0.8)),
         url('bgimg1.jpeg');
     height: 100vh;
     width: 100vw;
@@ -21,7 +21,7 @@
 
 .left-home {
     color: darkblue;
-    width: 50%;
+    width: 60%;
     display: flex;
     flex-direction: column;
 }
@@ -39,7 +39,8 @@
 .home-para>p {
     margin-left: 200px;
     margin-top: 22px;
-    font-size: 1.1rem;
+    margin-bottom: 2em;
+    font-size: 1.2rem;
     color: rgb(255, 255, 255);
 }
 
