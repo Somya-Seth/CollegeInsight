@@ -18,7 +18,7 @@
     flex-direction: column;
 }
 .upper_background {
-    background-color: rgb(116, 116, 116);
+    background-color: #c3d8ff !important;
     height: 25vh;
     border-radius: 0.3rem;
 }
@@ -35,7 +35,7 @@
     margin-top: -6rem;
     margin-left: 2rem;
     background-repeat: no-repeat;
-    background-position: center center;
+    background-position: center;
     background-size: cover;
     background-image: url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQugI-fjEQY6QgiF50IgnxXivFmtuQS3BBbnA&usqp=CAU/200X200");
 }
@@ -46,7 +46,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 4px solid grey;
+    border: 4px solid #c3d8ff !important;
     /* object-fit: contain; */
 }
 .imp_details {

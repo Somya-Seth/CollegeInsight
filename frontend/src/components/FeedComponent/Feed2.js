@@ -284,7 +284,7 @@ export default function Feed2() {
 
     const getUsers = (e) => {
         setSearchQuery(e.target.value)
-        if(e.target.value == ''){
+        if (e.target.value == '') {
             setSearchedUsers([])
         }
         const arr = allUsers.filter((item) => {
@@ -304,7 +304,7 @@ export default function Feed2() {
 
     const searchedNameClicked = (info) => {
         console.log('searchedNameClicked', info);
-        navigate('/userProfile', {state: info})
+        navigate('/userProfile', { state: info })
     }
 
     return (
@@ -349,7 +349,7 @@ export default function Feed2() {
                                         showSkills && (
                                             <>
                                                 {showSkills.map((item, index) => (
-                                                    <p style={{ textAlign: "center", marginRight: "5%", minWidth: "35%", backgroundColor: "#dce3f9", borderRadius: "200px", border: "1px solid grey" }} key={index}>{item}</p>
+                                                    <p style={{ textAlign: "center", marginRight: "1em", minWidth: "35%", backgroundColor: "#c3d8ff", borderRadius: "5px", padding: "0.3em 0.7em" }} key={index}>{item}</p>
                                                 ))}
                                             </>
                                         )
@@ -366,14 +366,14 @@ export default function Feed2() {
                         <input className="form-control" type="text" placeholder="Search your friends to see their profile ..." aria-label="Search" onChange={getUsers} value={searchQuery} />
                     </MDBCol>
                     {
-                        searchedUsers.length>0 && searchQuery!=''?(
+                        searchedUsers.length > 0 && searchQuery != '' ? (
                             <Card className='searched_users_card'>
                                 {searchedUsers?.map((u) => {
-                                   return <div style={{border: '1px solid #f3f3f3', padding: '0.5rem', marginBottom: '0.5rem', cursor: 'pointer'}} onClick={() => searchedNameClicked(u)}>{u?.name}</div>
-                                }) }
+                                    return <div style={{ border: '1px solid #f3f3f3', padding: '0.5rem', marginBottom: '0.5rem', cursor: 'pointer' }} onClick={() => searchedNameClicked(u)}>{u?.name}</div>
+                                })}
                             </Card>
                         )
-                        : ''
+                            : ''
                     }
                     <div className='feed_middle_top'>
                         <ShareBox>
