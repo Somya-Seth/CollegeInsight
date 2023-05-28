@@ -1,6 +1,7 @@
 import { React, useState, useEffect } from "react";
 import TextField from "@mui/material/TextField";
 import "./Navbar.css";
+import navLogo from '../../image/CI_logo_light.png'
 import Dropdown from 'react-bootstrap/Dropdown';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import { AiFillHome } from "react-icons/ai"
@@ -42,7 +43,9 @@ export default function Navbar() {
   }
   return (
     <div className="navbar">
-      <div className="college_name">SR GROUP OF INSTITUTIONS</div>
+      <img className="nav_logo" src={navLogo}></img>
+      <div className="nav_SRGI">SR Group of Institutions</div>
+      
       <div className="icons">
         <AiFillHome style={{cursor: 'pointer'}} onClick={() => navigate('/feed')}/>
         <BsFillChatDotsFill onClick={messenger} style={{cursor: 'pointer'}}/>
