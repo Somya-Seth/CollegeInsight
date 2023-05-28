@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
 import { Button } from '@mui/material';
-import srgilogo from '../../image/slogo.jpeg'
+import cilogo from '../../image/CI_logo.png'
 import "./Signup.css"
 // import Carousel from "../../components/Carousel/Carousel"
 import { useNavigate } from "react-router-dom";
@@ -73,14 +73,9 @@ export default function Signup() {
   return (
     <>
     <div className='row'>
-      <div className='col-7 college-image'>
-        {/* <Carousel className="carousel"/>     */}
-        <img src={image1} className='image__' alt='' />
-      </div>
-      <div className='col login-form'>
+      <div className='login-form'>
         <div className='inner'>
-          <img src={srgilogo} className="srgi-logo" alt='logo' />
-          <h3>COLLEGE INSIGHT</h3>
+          <img src={cilogo} className="ci-logo" alt='logo' />
           <div>
             <TextField id="outlined-basic" label="Name" variant="outlined" fullWidth size='small' margin='dense' value={user.name} name="name" onChange={handleChange} required 
             error={isClickedSignup && user.name === "" }
@@ -111,7 +106,7 @@ export default function Signup() {
             </TextField>
           </div>
           <div className='forget_password'></div>
-          <Button variant="contained" fullWidth className='login_button' onClick={register}>signup</Button>
+          <Button fullWidth className='signup_button' onClick={register}>signup</Button>
           <div className='more_'>Want to know about college? <a href='https://srgi.ac.in/' className='blue' target='__blank'>Go here</a></div>
         </div>
       </div>

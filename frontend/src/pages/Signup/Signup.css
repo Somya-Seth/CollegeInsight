@@ -1,9 +1,15 @@
 .row {
-    margin: 5rem;
     display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    /* align-items: center; */
+    margin: 0;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 139, 0.7)),
+        url('../../image/image4.jpg');
+    height: 100vh;
+    width: 100vw;
+    background-repeat: no-repeat;
+    object-fit: contain;
+    background-position: center;
+    background-size: cover;
+
 }
 .college-image {
     width: 40rem;
@@ -13,16 +19,15 @@
     margin-right: 3rem;
 }
 .login-form {
-    width: 40rem;
-    height: auto;
-    padding: 0.5rem;
-    padding-top: 0;
-    border: 1px solid black;
+    width: 30rem;
+    height: 32rem;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 15vh;
     border-radius: 1rem;
-    /* display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center; */
+    background-color: rgba(255, 255, 255, 0.7);
+    box-shadow: 0 0 20px #000000;
+    padding: 0 2em 0 2em;
 }
 .inner {
     display: flex;
@@ -40,8 +45,20 @@
     margin-top: 0.5em;
     margin-bottom: 0.5em;
 } */
-.login_button {
+.signup_button {
     margin-top: 1rem;
+    border: none;
+    border-radius: 5px;
+    color: #fff; 
+    margin-top: 0.5em;
+    padding: 0.5rem 2rem;
+    background-image: linear-gradient(to right, #021B79 0%, #0575E6   51%, #021B79  100%);
+    transition: 0.5s; 
+    background-size: 200% auto; 
+    box-shadow: 0 0 20px #eee;
+}
+.signup_button:hover{
+    background-position: right center;
 }
 .more_ {
     margin-top: 0.5em;
