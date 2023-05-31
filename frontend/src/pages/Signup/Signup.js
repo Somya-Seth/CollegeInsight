@@ -117,6 +117,9 @@ export default function Signup() {
             </div>
             <div className='forget_password'></div>
           <button fullWidth className='signup_button' onClick={register}>SIGNUP</button>
+          <div className='more_'>Already have an account? <span className='blue' onClick={() => {
+              navigate('/login')
+            }}>Login</span></div>
             <div className='more_'>Want to know about college? <a href='https://srgi.ac.in/' className='blue' target='__blank'>Go here</a></div>
           </div>
         </div>

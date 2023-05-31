@@ -50,9 +50,14 @@ export default function Login() {
   const login = async () => {
     console.log("users in ", users)
     const userData = await axios.get(`http://localhost:8000/users?email=${users.email}`)
-    console.log("userData", userData.data[0].isVerified)
+    console.log("userData", userData)
     loginClicked(true)
-    if (users.email && users.password && userData.data[0].isVerified) {
+    // if (users.email && users.password && userData.data[0].isVerified) {
+    if(userData.data.length>0 && !userData?.data[0]?.isVerified){
+      handleErrors("First Verify Yourself Through Mail by signing in with Correct Mailid")
+      return 
+    }
+    else if (users.email && users.password) {
       try {
         await loginCall(
           { email: users.email, password: users.password },
@@ -67,6 +72,9 @@ export default function Login() {
           else if (res == 'Invalid Password') {
             handleErrors('Invalid Password')
           }
+          // else if (!userData.data[0].isVerified) {
+          //   handleErrors("First Verify Yourself Through Mail by signing in with Correct Mailid")
+          // }
           else {
             navigate('/feed')
           }
@@ -78,9 +86,7 @@ export default function Login() {
       catch (err) {
         console.log("error occured in loggin in", err)
       }
-    } else if (!userData.data[0].isVerified) {
-      handleErrors("First Verify Yourself Through Mail by signing in with Correct Mailid")
-    }
+    } 
   }
 
   const handleErrors = async (msg) => {
