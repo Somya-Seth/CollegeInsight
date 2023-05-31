@@ -17,6 +17,9 @@
     display: flex;
     flex-direction: column;
 }
+.about_yourself{
+    text-align: center;
+}
 .feed_left>*, .feed_middle>*, .feed_right>* {
     margin: 1rem;
 }
