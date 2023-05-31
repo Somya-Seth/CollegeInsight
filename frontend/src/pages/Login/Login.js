@@ -106,7 +106,7 @@ export default function Login() {
       );
       setError('Sorry! You are blocked')
     } else if (msg == "First Verify Yourself Through Mail by signing in with Correct Mailid") {
-      swal("Sorry! Your are not verified!",
+      swal("Sorry! You are not verified!",
         "Verify Yourself through Mail with which you have Registered",
         "error")
       setError("First Verify Yourself Through Mail by signing in with Correct Mailid")
